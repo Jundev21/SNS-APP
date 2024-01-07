@@ -28,3 +28,10 @@ spring:
   h2:
     console:
       enabled: true
+
+
+jwt:
+  secret:
+    key: 612E3DFC176A8E32A3E59C2AC65D2612E3DFC176A8E32A3E59C2AC65D2
+  token:
+    expired-time: 2592000000

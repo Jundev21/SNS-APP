@@ -4,6 +4,7 @@ package com.sns.sns.service.domain.member.controller;
 import com.sns.sns.service.common.response.Response;
 import com.sns.sns.service.domain.member.dto.request.LoginRequest;
 import com.sns.sns.service.domain.member.dto.request.RegisterRequest;
+import com.sns.sns.service.domain.member.dto.response.LoginResponse;
 import com.sns.sns.service.domain.member.dto.response.RegisterResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.service.MemberService;
@@ -29,10 +30,10 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public String memberLogin(
+    public Response<LoginResponse> memberLogin(
             @RequestBody LoginRequest loginRequest
             ){
-        return memberService.memberLogin(loginRequest);
+        return Response.success(memberService.memberLogin(loginRequest));
     }
 
 }

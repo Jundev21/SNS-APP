@@ -2,6 +2,7 @@ package com.sns.sns.service.service;
 
 
 import com.sns.sns.service.domain.exception.BasicException;
+import com.sns.sns.service.domain.exception.ErrorCode;
 import com.sns.sns.service.domain.member.dto.request.LoginRequest;
 import com.sns.sns.service.domain.member.dto.request.RegisterRequest;
 import com.sns.sns.service.domain.member.model.entity.Member;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -31,6 +33,10 @@ public class UserServiceTest {
 
     @MockBean
     private MemberRepository memberRepository;
+
+    @MockBean
+    private BCryptPasswordEncoder encoder;
+
 
     @Test
     @DisplayName("회원가입이 정상적으로 되었을 경우")
@@ -70,7 +76,10 @@ public class UserServiceTest {
         String username = "username";
         String password = "password";
 
-        when(memberRepository.findByUserName(username)).thenReturn(Optional.of(new Member(username, password)));
+        Member newMember = new Member(username, password);
+
+        when(memberRepository.findByUserName(username)).thenReturn(Optional.of(newMember));
+        when(encoder.matches(password, newMember.getPassword())).thenReturn(true);
 
         Assertions.assertDoesNotThrow(()->memberService.memberLogin(
                 new LoginRequest(username, password)
@@ -84,11 +93,13 @@ public class UserServiceTest {
         String username = "username";
         String password = "password";
 
-        when(memberRepository.findByUserName(username)).thenThrow(BasicException.class);
+        when(memberRepository.findByUserName(username)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(BasicException.class, ()->memberService.memberLogin(
+        BasicException error =  Assertions.assertThrows(BasicException.class, ()->memberService.memberLogin(
                 new LoginRequest(username, password)
         ));
+
+        Assertions.assertEquals(error.getErrorCode(), ErrorCode.NOT_EXIST_MEMBER);
     }
 
     @Test
@@ -101,10 +112,12 @@ public class UserServiceTest {
 
         when(memberRepository.findByUserName(username)).thenReturn(Optional.of(new Member(username, password)));
 
-
-        Assertions.assertThrows(BasicException.class, () -> memberService.memberLogin(
+        BasicException error =  Assertions.assertThrows(BasicException.class, () -> memberService.memberLogin(
                 new LoginRequest(username, wrongPassword)
         ));
+
+        Assertions.assertEquals(error.getErrorCode(), ErrorCode.INVALID_PASSWORD);
+
     }
 
 
