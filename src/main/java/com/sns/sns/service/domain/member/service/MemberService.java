@@ -48,10 +48,15 @@ public class MemberService {
             throw new BasicException(ErrorCode.INVALID_PASSWORD,"비밀번호 다릅니다.");
         }
 
-        String jwtToken = jwtTokenUtil.generateToken(member.getUserName());
+        String jwtToken = jwtTokenUtil.generateToken(member.getUsername());
 
         return new LoginResponse(jwtToken, null);
+    }
 
+
+    public Member loadMemberByMemberName(String userName){
+        return memberRepository.findByUserName(userName)
+                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원"));
 
     }
 }

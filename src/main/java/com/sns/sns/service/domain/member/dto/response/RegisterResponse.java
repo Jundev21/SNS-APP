@@ -14,7 +14,7 @@ public record RegisterResponse(
     public static RegisterResponse fromEntity(Member member){
         return new RegisterResponse(
                 member.getId(),
-                member.getUserName(),
+                member.getUsername(),
                 member.getRole()
         );
 
