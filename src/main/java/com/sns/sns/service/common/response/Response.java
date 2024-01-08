@@ -17,4 +17,12 @@ public class Response<T>{
     public static <T> Response<T> success(T resultBody){
         return new Response<>("Success", resultBody);
     }
+
+    public String toStream() {
+        if(responseBody == null){
+            return "{" + " responseBody" + null + "}";
+        }
+        return "{" + " responseBody" + responseBody + "}";
+    }
+
 }
