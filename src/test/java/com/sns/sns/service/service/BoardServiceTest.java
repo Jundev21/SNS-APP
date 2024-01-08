@@ -169,4 +169,66 @@ public class BoardServiceTest {
 
     }
 
+
+    @Test
+    @DisplayName("게시물이 성공적으로 삭제된 경우")
+    public void successToDeleteBoard(){
+        //멤버와
+        //보더를 일단 구해옴
+//        멤버가 해당 게시물을 삭제하려는지 확인해야함.
+        String userName = "test";
+        String password = "password";
+        Member member = new Member(userName, password);
+        BoardEntity boardEntity = new BoardEntity("title", "contents", member);
+
+        when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
+        when(boardRepository.findById(any())).thenReturn(Optional.of(boardEntity));
+
+        Assertions.assertDoesNotThrow(()-> boardService.deleteBoard(1L, member));
+
+
+    }
+
+    @Test
+    @DisplayName("권한이없어 게시물이 삭제되지 않은 경우 ")
+    public void failToDeleteBoard(){
+
+        String userName = "test";
+        String password = "password";
+        Member member = new Member(userName, password);
+        Member member2 = new Member(userName +"2", password);
+        BoardEntity boardEntity = new BoardEntity("title", "contents", member);
+
+        when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member2));
+        when(boardRepository.findById(any())).thenReturn(Optional.of(boardEntity));
+
+        BasicException error =  Assertions.assertThrows(BasicException.class,()-> boardService.deleteBoard(1L, member));
+
+        Assertions.assertEquals(error.getErrorCode(), ErrorCode.INVALID_PERMISSION);
+
+    }
+
+    @Test
+    @DisplayName("게시물이 존재하지 않아 삭제되지 않는 경우")
+    public void boardDoesntExistDelete(){
+
+        String title = "title";
+        String content = "content";
+        String username = "test";
+        String password = "password";
+
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
+        Member member = new Member(username, password);
+
+        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+
+        when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        BasicException error = Assertions.assertThrows(BasicException.class,()-> boardService.deleteBoard(1L,member));
+
+        Assertions.assertEquals(error.getErrorCode(),ErrorCode.NOT_EXIST_BOARD);
+    }
+
+
 }

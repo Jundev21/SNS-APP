@@ -4,6 +4,7 @@ package com.sns.sns.service.domain.board.controller;
 import com.sns.sns.service.common.response.Response;
 import com.sns.sns.service.domain.board.dto.request.BoardRequest;
 import com.sns.sns.service.domain.board.dto.request.BoardUpdateRequest;
+import com.sns.sns.service.domain.board.dto.response.BoardDeleteResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
 import com.sns.sns.service.domain.board.service.BoardService;
@@ -28,12 +29,6 @@ public class BoardController {
         return Response.success(boardService.writeBoard(boardRequest,member));
     }
 
-//    @GetMapping
-//    public Response<BoardResponse> getBoards(
-//    ){
-//        return Response.success(boardService.getBoard());
-//    }
-//
     @PutMapping("/{boardId}")
     public Response<BoardUpdateResponse> updateBoard(
             @PathVariable Long boardId,
@@ -42,14 +37,14 @@ public class BoardController {
     ){
         return Response.success(boardService.updateBoard(boardId, boardUpdateRequest,member));
     }
-//
-//    @DeleteMapping("/{boardId}")
-//    public Response<BoardResponse> deleteBoard(
-//            @PathVariable Long boardId,
-//            @AuthenticationPrincipal Member member
-//    ){
-//        return Response.success(boardService.deleteBoard(boardId,member));
-//    }
+
+    @DeleteMapping("/{boardId}")
+    public Response<BoardDeleteResponse> deleteBoard(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal Member member
+    ){
+        return Response.success(boardService.deleteBoard(boardId,member));
+    }
 
 
 

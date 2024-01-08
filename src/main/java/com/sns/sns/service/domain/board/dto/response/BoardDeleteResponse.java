@@ -5,31 +5,25 @@ import com.sns.sns.service.domain.member.dto.response.BasicUserInfoResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import lombok.Builder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 @Builder
-public record BoardUpdateResponse(
+public record BoardDeleteResponse(
         Long id,
-
         String title,
         String content,
         BasicUserInfoResponse member,
-        LocalDateTime createdTime,
         LocalDateTime updateTime
 
 ) {
 
-
-    public static BoardUpdateResponse boardUpdateResponse(BoardEntity board, Member member){
-
-        return BoardUpdateResponse.builder()
+    public static BoardDeleteResponse boardDeleteResponse(BoardEntity board, Member member){
+        return BoardDeleteResponse.builder()
                 .id(board.getId())
                 .title(board.getTitle())
                 .content(board.getContents())
                 .member(BasicUserInfoResponse.basicUserInfoResponse(member))
-                .createdTime(board.getCreatedTime())
+                .updateTime(board.getUpdatedTime())
                 .build();
     }
 }

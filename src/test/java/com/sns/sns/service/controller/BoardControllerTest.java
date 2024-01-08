@@ -30,8 +30,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -185,8 +184,62 @@ public class BoardControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
+    }
+
+    // =====================================================
+
+    @Test
+    @WithMockUser
+    @DisplayName("게시물 삭제 성공")
+    public void successToDelete() throws Exception {
+        mockMvc.perform(delete("/api/v1/board/1"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("비회원 게시물 삭제 실패")
+    public void anonymousToDelete() throws Exception {
+
+        when(boardService.deleteBoard(any(),any()))
+                .thenThrow(new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
+
+        mockMvc.perform(delete("/api/v1/board/1"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
 
 
     }
 
+    @Test
+    @WithMockUser
+    @DisplayName("게시물 삭제시 사용자가 생성한 게시물이 아닐경우 실패")
+    public void notDuplicatedToDelete() throws Exception {
+
+        when(boardService.deleteBoard(any(), any()))
+                .thenThrow(new BasicException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage()));
+
+        mockMvc.perform(delete("/api/v1/board/1"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+
+
+    }
+
+
+    @Test
+    @WithMockUser
+    @DisplayName("게시물 삭제시 존재하지않는 게시판 실패")
+    public void failToDelete() throws Exception {
+
+        when(boardService.deleteBoard(any(),any()))
+                .thenThrow(new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
+
+        mockMvc.perform(delete("/api/v1/board/1"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+
+    }
 }

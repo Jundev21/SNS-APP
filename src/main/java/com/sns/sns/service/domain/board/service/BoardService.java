@@ -3,6 +3,7 @@ package com.sns.sns.service.domain.board.service;
 
 import com.sns.sns.service.domain.board.dto.request.BoardRequest;
 import com.sns.sns.service.domain.board.dto.request.BoardUpdateRequest;
+import com.sns.sns.service.domain.board.dto.response.BoardDeleteResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
 import com.sns.sns.service.domain.board.model.BoardEntity;
@@ -57,7 +58,23 @@ public class BoardService {
         return BoardUpdateResponse.boardUpdateResponse(newBoard, findMember);
 
     }
-//
-//    public BoardResponse deleteBoard(Long boardId, Member member) {
-//    }
+
+    public BoardDeleteResponse deleteBoard(Long boardId, Member member) {
+
+
+        Member findMember = memberRepository.findByUserName(member.getUsername())
+                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
+
+        BoardEntity board =  boardRepository.findById(boardId)
+                .orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
+
+        if(findMember != board.getMember()){
+            throw new BasicException(ErrorCode.INVALID_PERMISSION,ErrorCode.INVALID_PERMISSION.getMessage());
+        }
+
+        boardRepository.delete(board);
+
+        return BoardDeleteResponse.boardDeleteResponse(board, findMember);
+    }
+
 }
