@@ -88,6 +88,7 @@ public class BoardServiceTest {
 
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(updateTitle, updateContent);
 
+        when(memberRepository.findByUserName(anyString())).thenReturn(Optional.of(member));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(new BoardEntity(boardRequest.title(), boardRequest.content(), member)));
 
         BoardUpdateResponse boardUpdateResponse = boardService.updateBoard(anyLong(), boardUpdateRequest, member);
@@ -136,6 +137,7 @@ public class BoardServiceTest {
 
         BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
 
+        when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         BasicException error = Assertions.assertThrows(BasicException.class,()-> boardService.updateBoard(1L,boardUpdateRequest,member));

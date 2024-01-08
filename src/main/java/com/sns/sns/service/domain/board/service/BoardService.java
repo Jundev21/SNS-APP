@@ -43,7 +43,7 @@ public class BoardService {
     public BoardUpdateResponse updateBoard(Long boardId, BoardUpdateRequest boardUpdateRequest, Member member) {
 
         Member findMember = memberRepository.findByUserName(member.getUsername())
-                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_BOARD, ErrorCode.NOT_EXIST_BOARD.getMessage()));
+                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
 
         BoardEntity board = boardRepository.findById(boardId)
                 .orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
