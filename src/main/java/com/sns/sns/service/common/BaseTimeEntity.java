@@ -24,9 +24,4 @@ public class BaseTimeEntity {
     @Column(name = "updatedTime")
     private LocalDateTime updatedTime;
 
-    @LastModifiedDate
-    @Column(name = "deletedTime")
-    private LocalDateTime deletedTime;
-
-
 }
