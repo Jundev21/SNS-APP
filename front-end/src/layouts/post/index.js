@@ -53,7 +53,7 @@ const Transition = React.forwardRef(function Transition(
 
 function Post() {
   const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [contents, setBody] = useState('');
   const [open, setOpen] = React.useState(false);
   const [dialogTitle, setDialogTitle] = React.useState('');
   const [dialogMessage, setDialogMessage] = React.useState('');
@@ -69,17 +69,17 @@ function Post() {
   const handleWritePost = (event) => {
     console.log(localStorage.getItem('token'));
     console.log('title : ' + title);
-    console.log('body : ' + body);
+    console.log('body : ' + contents);
 
     axios({
-      url: '/api/v1/posts',
+      url: '/api/v1/board',
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),
       },
       data: {
         title: title,
-        body: body,
+        contents: contents,
       },
     })
       .then((res) => {

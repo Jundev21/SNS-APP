@@ -90,17 +90,18 @@ function Basic() {
       url: '/api/v1/users/login',
       method: 'POST',
       data: {
-        name: userName,
+        userName: userName,
         password: password,
       },
     })
       .then((res) => {
         console.log('success');
         setDialogTitle('success');
+        console.log("find togen")
         setDialogMessage('');
         setOpen(true);
-        localStorage.setItem('token', res.data.result.token);
-        console.log(res.data.result.token);
+        localStorage.setItem('token', res.data.responseBody.token);
+        console.log(res.data.responseBody.token);
       })
       .catch((error) => {
         setDialogTitle(error.response.data.resultCode);

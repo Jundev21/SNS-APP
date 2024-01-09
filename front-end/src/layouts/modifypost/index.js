@@ -76,7 +76,7 @@ function ModifyPost() {
     console.log('id : ' + id);
 
     axios({
-      url: '/api/v1/posts/' + id,
+      url: '/api/v1/board/' + id,
       method: 'PUT',
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),

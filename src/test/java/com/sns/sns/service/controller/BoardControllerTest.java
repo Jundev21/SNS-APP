@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -87,7 +88,7 @@ public class BoardControllerTest {
     }
 
 
-    //===========================================
+    //==================수정=========================
     @Test
     @WithMockUser
     @DisplayName("게시물 수정")
@@ -186,7 +187,7 @@ public class BoardControllerTest {
 
     }
 
-    // =====================================================
+    // ======================삭제===============================
 
     @Test
     @WithMockUser
@@ -224,7 +225,6 @@ public class BoardControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
 
-
     }
 
 
@@ -240,6 +240,42 @@ public class BoardControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-
     }
+
+//    =============피드==================
+
+    @Test
+    @WithMockUser
+    @DisplayName("모든 게시물 조회시 성공")
+    public void successToGetBoard() throws Exception {
+
+        when(boardService.getBoard(any())).thenReturn(Page.empty());
+        mockMvc.perform(get("/api/v1/board"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("사용자 게시물 조회 성공")
+    public void successToGetUserBoard() throws Exception {
+
+        when(boardService.getUserBoard(any(),any())).thenReturn(Page.empty());
+        mockMvc.perform(get("/api/v1/board/user"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("사용자 게시물 조회 실패")
+    public void failToGetUserBoard() throws Exception {
+
+        mockMvc.perform(get("/api/v1/board/user"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+
 }

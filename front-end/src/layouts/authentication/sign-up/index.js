@@ -71,10 +71,10 @@ function Cover() {
     console.log(password);
 
     axios({
-      url: '/api/v1/users/join',
+      url: '/api/v1/users/register',
       method: 'POST',
       data: {
-        name: userName,
+        userName: userName,
         password: password,
       },
     })

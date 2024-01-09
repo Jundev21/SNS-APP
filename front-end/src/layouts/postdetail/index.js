@@ -59,8 +59,8 @@ function PostDetail() {
   console.log(state);
   const [page, setPage] = useState(0);
   const [title, setTitle] = useState(state.title);
-  const [writer, setWriter] = useState(state.user.userName);
-  const [body, setBody] = useState(state.body);
+  const [writer, setWriter] = useState(state.basicUserInfoResponse.userName);
+  const [body, setBody] = useState(state.contents);
   const [id, setId] = useState(state.id);
 
   const [likes, setLikes] = useState(0);
@@ -124,8 +124,8 @@ function PostDetail() {
       .then((res) => {
         console.log('success');
         console.log(res);
-        setComments(res.data.result.content);
-        setTotalPage(res.data.result.totalPages);
+        setComments(res.data.boardGetResponse.contents);
+        setTotalPage(res.data.boardGetResponse.totalPages);
       })
       .catch((error) => {
         console.log(error);

@@ -94,7 +94,7 @@ function Feed() {
   const handleGetPosts = (pageNum, event) => {
     console.log('handleGetPosts');
     axios({
-      url: '/api/v1/posts?size=5&sort=id&page=' + pageNum,
+      url: '/api/v1/board?size=5&sort=id&page=' + pageNum,
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -103,8 +103,8 @@ function Feed() {
       .then((res) => {
         console.log('success');
         console.log(res);
-        setPosts(res.data.result.content);
-        setTotalPage(res.data.result.totalPages);
+        setPosts(res.data.responseBody.content);
+        setTotalPage(res.data.responseBody.totalPages);
       })
       .catch((error) => {
         console.log(error);
@@ -131,7 +131,7 @@ function Feed() {
                   </Grid>
                   <Grid item xs={6}>
                     <MDTypography variant="body2" textAlign="right">
-                      {post.user.userName}
+                      {post.basicUserInfoResponse.userName}
                     </MDTypography>
                   </Grid>
                 </Grid>

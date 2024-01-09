@@ -35,8 +35,8 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
     ) throws ServletException, IOException {
 
-//        필터링이 실행될때 가장먼저 헤더를 확인한다. 헤더에 jwt 토큰이 있는지 없는지를 먼저체크
-        // jwt 토큰을 헤더에 담는지 쿠키에담는지 먼저 체크확인
+        //      필터링이 실행될때 가장먼저 헤더를 확인한다. 헤더에 jwt 토큰이 있는지 없는지를 먼저체크
+        //      jwt 토큰을 헤더에 담는지 쿠키에담는지 먼저 체크확인
 
         final String getHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String tokenPreFix = "Bearer ";
@@ -49,7 +49,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             final String jwtToken = getHeader.substring(tokenPreFix.length());
-
 
             if (jwtTokenUtil.isTokenExpired(jwtToken)) {
                 log.error("토큰 만료되었습니다.");

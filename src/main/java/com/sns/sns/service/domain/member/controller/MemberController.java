@@ -9,10 +9,7 @@ import com.sns.sns.service.domain.member.dto.response.RegisterResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -21,6 +18,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
+
+    @CrossOrigin("http://localhost:3001")
     @PostMapping("/register")
     public Response<RegisterResponse> memberRegister(
             @RequestBody RegisterRequest registerRequest
@@ -28,6 +27,8 @@ public class MemberController {
         return Response.success(memberService.memberRegister(registerRequest));
     }
 
+
+    @CrossOrigin("http://localhost:3001")
 
     @PostMapping("/login")
     public Response<LoginResponse> memberLogin(
