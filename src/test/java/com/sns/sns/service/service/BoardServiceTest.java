@@ -90,7 +90,7 @@ public class BoardServiceTest {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(updateTitle, updateContent);
 
         when(memberRepository.findByUserName(anyString())).thenReturn(Optional.of(member));
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(new BoardEntity(boardRequest.title(), boardRequest.content(), member)));
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(new BoardEntity(boardRequest.title(), boardRequest.contents(), member)));
 
         BoardUpdateResponse boardUpdateResponse = boardService.updateBoard(anyLong(), boardUpdateRequest, member);
 

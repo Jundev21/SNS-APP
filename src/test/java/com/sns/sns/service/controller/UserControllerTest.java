@@ -112,7 +112,6 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsBytes(new LoginRequest(userName, userPassword)))
                 ).andDo(print())
                 .andExpect(status().isNotFound());
-
     }
 
     @Test
@@ -128,7 +127,6 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsBytes(new LoginRequest(userName, userPassword)))
                 ).andDo(print())
                 .andExpect(status().isUnauthorized());
-
     }
 
 }

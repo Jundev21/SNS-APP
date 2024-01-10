@@ -14,7 +14,8 @@ public record BoardGetResponse(
         String title,
         String contents,
         BasicUserInfoResponse basicUserInfoResponse,
-        LocalDateTime createdTime
+        LocalDateTime createdTime,
+        int totalFavoriteNums
 
 ) {
 
@@ -23,6 +24,7 @@ public record BoardGetResponse(
                 .id(board.getId())
                 .title(board.getTitle())
                 .contents(board.getContents())
+                .totalFavoriteNums(board.getFavoriteEntityList().size())
                 .basicUserInfoResponse(BasicUserInfoResponse.basicUserInfoResponse(board.getMember()))
                 .createdTime(board.getCreatedTime())
                 .build();
