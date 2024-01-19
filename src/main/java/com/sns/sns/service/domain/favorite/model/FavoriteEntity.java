@@ -4,6 +4,7 @@ package com.sns.sns.service.domain.favorite.model;
 import com.sns.sns.service.common.BaseTimeEntity;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.member.model.entity.Member;
+import com.sns.sns.service.domain.notification.model.NotificationEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,9 @@ public class FavoriteEntity extends BaseTimeEntity {
     private BoardEntity boardEntity;
     @ManyToOne
     private Member member;
+    @ManyToOne
+    private NotificationEntity notificationEntity;
+
 
 
     public FavoriteEntity(

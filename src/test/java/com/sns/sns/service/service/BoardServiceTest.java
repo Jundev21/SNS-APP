@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sns.sns.service.data.BoardData.boardRequestData;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -113,7 +114,7 @@ public class BoardServiceTest {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
         Member member = new Member(username, password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.updateBoard(boardUpdateRequest, member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.ofNullable(boardEntity.getMember()));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(boardEntity));
@@ -136,7 +137,7 @@ public class BoardServiceTest {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
         Member member = new Member(username, password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -159,7 +160,7 @@ public class BoardServiceTest {
         Member member = new Member(username, password);
         Member member2 = new Member(username + '2', password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member2));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(boardEntity));
@@ -218,10 +219,9 @@ public class BoardServiceTest {
         String username = "test";
         String password = "password";
 
-        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
         Member member = new Member(username, password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());

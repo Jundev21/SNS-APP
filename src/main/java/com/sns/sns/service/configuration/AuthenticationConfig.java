@@ -41,10 +41,10 @@ public class AuthenticationConfig{
                 .cors(CorsConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests((request) -> request
+                        .requestMatchers(HttpMethod.GET,"/api/v1/board").permitAll()
                         .requestMatchers("/api/v1/users/login").permitAll()
                         .requestMatchers("/api/v1/users/register").permitAll()
                         .requestMatchers("/api/*/users/alarm/subscribe/*").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/*/board/*").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
 

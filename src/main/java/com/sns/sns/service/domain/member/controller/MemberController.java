@@ -18,17 +18,12 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
-    @CrossOrigin("http://localhost:3001")
     @PostMapping("/register")
     public Response<RegisterResponse> memberRegister(
             @RequestBody RegisterRequest registerRequest
     ) {
         return Response.success(memberService.memberRegister(registerRequest));
     }
-
-
-    @CrossOrigin("http://localhost:3001")
 
     @PostMapping("/login")
     public Response<LoginResponse> memberLogin(
