@@ -9,14 +9,10 @@ public record BasicUserInfoResponse(
         Long id,
         String userName
 ) {
-
-
     public static BasicUserInfoResponse basicUserInfoResponse(Member member){
-
         return BasicUserInfoResponse.builder()
                 .id(member.getId())
                 .userName(member.getUsername())
                 .build();
     }
-
 }

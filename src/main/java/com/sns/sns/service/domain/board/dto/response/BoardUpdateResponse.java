@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 public record BoardUpdateResponse(
         Long id,
-
         String title,
         String content,
         BasicUserInfoResponse member,

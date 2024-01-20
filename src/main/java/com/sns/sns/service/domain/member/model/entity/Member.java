@@ -3,7 +3,10 @@ package com.sns.sns.service.domain.member.model.entity;
 
 import com.sns.sns.service.common.BaseTimeEntity;
 import com.sns.sns.service.domain.board.model.BoardEntity;
+import com.sns.sns.service.domain.comment.model.CommentEntity;
+import com.sns.sns.service.domain.favorite.model.FavoriteEntity;
 import com.sns.sns.service.domain.member.model.UserRole;
+import com.sns.sns.service.domain.notification.model.NotificationEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,8 +34,13 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
     @OneToMany(mappedBy = "member")
-    private List<BoardEntity> board = new ArrayList<>();
-
+    private List<BoardEntity> boardEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<NotificationEntity> notificationEntityList = new ArrayList<>();
 
     public Member(
             String username,

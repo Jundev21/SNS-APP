@@ -4,7 +4,6 @@ package com.sns.sns.service.service;
 import com.sns.sns.service.data.BoardData;
 import com.sns.sns.service.domain.board.dto.request.BoardRequest;
 import com.sns.sns.service.domain.board.dto.request.BoardUpdateRequest;
-import com.sns.sns.service.domain.board.dto.response.BoardResponse;
 import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.board.repository.BoardRepository;
@@ -16,13 +15,16 @@ import com.sns.sns.service.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
+import static com.sns.sns.service.data.BoardData.boardRequestData;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -89,7 +91,7 @@ public class BoardServiceTest {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(updateTitle, updateContent);
 
         when(memberRepository.findByUserName(anyString())).thenReturn(Optional.of(member));
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(new BoardEntity(boardRequest.title(), boardRequest.content(), member)));
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(new BoardEntity(boardRequest.title(), boardRequest.contents(), member)));
 
         BoardUpdateResponse boardUpdateResponse = boardService.updateBoard(anyLong(), boardUpdateRequest, member);
 
@@ -112,7 +114,7 @@ public class BoardServiceTest {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
         Member member = new Member(username, password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.updateBoard(boardUpdateRequest, member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.ofNullable(boardEntity.getMember()));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(boardEntity));
@@ -135,7 +137,7 @@ public class BoardServiceTest {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
         Member member = new Member(username, password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -158,7 +160,7 @@ public class BoardServiceTest {
         Member member = new Member(username, password);
         Member member2 = new Member(username + '2', password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member2));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(boardEntity));
@@ -217,10 +219,9 @@ public class BoardServiceTest {
         String username = "test";
         String password = "password";
 
-        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(title, content);
         Member member = new Member(username, password);
 
-        BoardEntity boardEntity = BoardData.newBoard(boardUpdateRequest, member);
+        BoardEntity boardEntity = BoardData.createNewBoard(boardRequestData(), member);
 
         when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -230,5 +231,42 @@ public class BoardServiceTest {
         Assertions.assertEquals(error.getErrorCode(),ErrorCode.NOT_EXIST_BOARD);
     }
 
+
+    @Test
+    @DisplayName("모든 게시물 가져올경우")
+    public void getAllBoard(){
+        Pageable pageable = mock(Pageable.class);
+
+        BoardEntity board = new BoardEntity("title", "content", new Member("username", "password"));
+        when(boardRepository.findAll(pageable)).thenReturn(Page.empty());
+        Assertions.assertDoesNotThrow(()-> boardService.getBoard(pageable));
+
+    }
+
+    @Test
+    @DisplayName("사용자 게시물 가져올 경우 성공")
+    public void getUserBoard(){
+        Member member = new Member("username", "password");
+        Pageable pageable = mock(Pageable.class);
+
+        BoardEntity board = new BoardEntity("title", "content", member);
+        when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.of(member));
+        when(boardRepository.findAllByMember(any(),any())).thenReturn(Page.empty());
+        Assertions.assertDoesNotThrow(()-> boardService.getUserBoard(pageable, member));
+    }
+
+    @Test
+    @DisplayName("게시물 가져올때 사용자가 없을 경우실패")
+    public void failedToGetNotExistUserBoard(){
+        Member member = new Member("username", "password");
+        Pageable pageable = mock(Pageable.class);
+
+        BoardEntity board = new BoardEntity("title", "content", member);
+        when(memberRepository.findByUserName(member.getUsername())).thenReturn(Optional.empty());
+        when(boardRepository.findAll()).thenReturn(List.of(board));
+        BasicException e = Assertions.assertThrows(BasicException.class,()-> boardService.getUserBoard(pageable, member));
+
+        Assertions.assertEquals(e.getErrorCode(),ErrorCode.NOT_EXIST_MEMBER);
+    }
 
 }

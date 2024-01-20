@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public record BoardResponse (
         Long id,
         String title,
-        String content,
+        String contents,
         BasicUserInfoResponse member,
         LocalDateTime createdTime
 
@@ -24,7 +24,7 @@ public record BoardResponse (
         return BoardResponse.builder()
                 .id(board.getId())
                 .title(board.getTitle())
-                .content(board.getContents())
+                .contents(board.getContents())
                 .member(BasicUserInfoResponse.basicUserInfoResponse(member))
                 .createdTime(board.getCreatedTime())
                 .build();

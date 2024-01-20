@@ -8,6 +8,7 @@ import com.sns.sns.service.jwt.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,14 +27,11 @@ public class AuthenticationConfig{
 
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberService memberService;
-
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -43,9 +41,13 @@ public class AuthenticationConfig{
                 .cors(CorsConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests((request) -> request
+                        .requestMatchers(HttpMethod.GET,"/api/v1/board").permitAll()
                         .requestMatchers("/api/v1/users/login").permitAll()
                         .requestMatchers("/api/v1/users/register").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/*/users/alarm/subscribe/*").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll()
+
                 )
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -54,14 +56,6 @@ public class AuthenticationConfig{
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 )
                 .build();
-
-
-
-
-
-
-
-
 
     }
 
