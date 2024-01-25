@@ -1,6 +1,7 @@
 package com.sns.sns.service.domain.notification.repository;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -11,29 +12,29 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class SseRepository {
 
-    private Map<String, SseEmitter> sseEmitterMap = new HashMap<>();
+    private Map<String, SseEmitter> sseRepository = new HashMap<>();
 
-    //client 는 아이디 값으로 들어온다.
-    public SseEmitter saveSse(Long userId, SseEmitter sseEmitter ){
-        final String key =getKey(userId);
-        sseEmitterMap.put(key, sseEmitter);
-        log.info("set emitter" + key);
+    public SseEmitter saveEmitter(Long userId, SseEmitter sseEmitter){
+        final String key = getKey(userId);
+        sseRepository.put(key, sseEmitter);
+        log.info("set emitter");
         return sseEmitter;
     }
 
     public Optional<SseEmitter> get(Long userId){
-        SseEmitter result = sseEmitterMap.get(getKey(userId));
-        log.info("Get Emitter from Redis {}", result);
-        return Optional.ofNullable(result);
+        log.info("get emitter");
+        return Optional.ofNullable(sseRepository.get(getKey(userId)));
     }
+    private String getKey(Long userId){
+        log.info("emitter key name is userId::"+userId);
+        return "userId::" + userId;
 
+    }
     public void delete(Long userId){
-        sseEmitterMap.remove(getKey(userId));
+        sseRepository.remove(getKey(userId));
     }
 
-    public String getKey(Long userId){
-        return "Emitter userId" + userId;
-    }
 }
