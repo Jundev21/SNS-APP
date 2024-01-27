@@ -130,12 +130,12 @@ public class BoardControllerTest {
 
         when(boardService.updateBoard(1L, boardUpdateRequest, mock(Member.class)))
                 .thenReturn(new BoardUpdateResponse(
-                        1L,
-                        boardUpdateRequest.title(),
-                        boardUpdateRequest.content(),
-                        new BasicUserInfoResponse(1L,"test"),
-                        LocalDateTime.now(),
-                        LocalDateTime.now()
+                                1L,
+                                boardUpdateRequest.title(),
+                                boardUpdateRequest.content(),
+                                new BasicUserInfoResponse(1L, "test", 0L),
+                                LocalDateTime.now(),
+                                LocalDateTime.now()
 
                         )
                 );
