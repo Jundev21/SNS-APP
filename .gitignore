@@ -601,3 +601,4 @@ gradle-app.setting
 
 **/node_modules/**
 front-end/static/**
+front-end/node_modules
