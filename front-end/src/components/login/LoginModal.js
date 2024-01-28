@@ -111,9 +111,6 @@ const LoginModal = (props) => {
     setShowLoginModal(false);
   };
 
-  // const handleEmailChange = e => {
-  //     setEmail(e.target.value);
-  // };
   const handleUserNameChange = (e) => {
     setUserName(e.target.value);
   };
@@ -121,8 +118,6 @@ const LoginModal = (props) => {
     setPassword(e.target.value);
   };
   const handleSignIn = (event) => {
-    console.log(userName);
-    console.log(password);
     event.preventDefault();
 
     axios({
@@ -132,16 +127,16 @@ const LoginModal = (props) => {
         userName: userName,
         password: password,
       },
-    }).then((res) => {
-      console.log("success");
-      setDialogTitle("success");
-      console.log("find togen");
-      localStorage.setItem("token", res.data.responseBody.token);
-      console.log(res.data.responseBody.token);
-      props.setIsLogin(true);
-      navigate("/");
-    });
-    props.handleModal();
+    })
+      .then((res) => {
+        localStorage.setItem("token", res.data.responseBody.token);
+        navigate("/");
+      })
+      .catch((error) => {
+        props.setCurrModalContent("로그인에 실패하셨습니다.");
+        props.handleModal();
+        props.handleNotiModal();
+      });
   };
 
   return (

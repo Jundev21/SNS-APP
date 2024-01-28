@@ -33,7 +33,7 @@ function BodyTitle({ renderData, title }: TitleProps) {
     <BodyTitleContainer>
       <SearchResult>
         {title} &nbsp;
-        <SearchNum> {renderData.length} </SearchNum> &nbsp; 개
+        <SearchNum> {renderData.length !== 0 ? renderData : 0} </SearchNum> &nbsp; 개
       </SearchResult>
       <ListOrder>
         {listData.map((el: OrderType, idx: number) => {

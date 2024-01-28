@@ -7,8 +7,8 @@ interface searchWordState {
 }
 
 const initialState = {
-  searchWord: "추천",
-  orderCommand: "date",
+  searchWord: "최신순",
+  orderCommand: "createdTime",
 } as searchWordState;
 
 export const searchSlice = createSlice({

@@ -1,15 +1,15 @@
-spring.datasource:
-  hikari.maximum-pool-size: 4
-  url: jdbc:postgresql://ec2-44-215-22-37.compute-1.amazonaws.com/d7ek4uknp7ops6
-  username: oluohgnicatyet
-  password: f317a8626690f1cc373cc5c6e9720b6b84527530d614843e874866a107ad4e1b
-  driver-class-name: org.postgresql.Driver
-
-spring.jpa:
-  database: postgresql
-  hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
-  hibernate.ddl-auto: update
-  show-sql: true
+#spring.datasource:
+#  hikari.maximum-pool-size: 4
+#  url: jdbc:postgresql://ec2-44-215-22-37.compute-1.amazonaws.com/d7ek4uknp7ops6
+#  username: oluohgnicatyet
+#  password: f317a8626690f1cc373cc5c6e9720b6b84527530d614843e874866a107ad4e1b
+#  driver-class-name: org.postgresql.Driver
+#
+#spring.jpa:
+#  database: postgresql
+#  hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+#  hibernate.ddl-auto: update
+#  show-sql: true
 
 
 #spring:
@@ -26,15 +26,15 @@ spring.jpa:
 #    init:
 #      platform: postgres
 #
-#spring:
-#  datasource:
-#    url: jdbc:h2:mem:sns
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password:
-#  h2:
-#    console:
-#      enabled: true
+spring:
+  datasource:
+    url: jdbc:h2:mem:sns
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
 
 
 jwt:

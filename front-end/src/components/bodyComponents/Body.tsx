@@ -5,82 +5,48 @@ import { useAppSelector } from "../../hooks";
 import Pagination from "../Pagination";
 import RenderContent from "./RenderContent";
 import BodyTitle from "./BodyTitle";
-import { useNavigate } from "react-router-dom";
 
 function Body() {
   const { searchWord, orderCommand } = useAppSelector((state) => state.searchState);
-  const [renderData, setRendering] = useState([]);
   const [currPageNum, setCurrPageNum] = useState(0);
   const [totalPageNum, setTotalPageNum] = useState([]);
-  //===========================================
 
-  const [page, setPage] = useState(0);
-  const [render, setRender] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [totalPage, setTotalPage] = useState(0);
-
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [open, setOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState("");
-  const [dialogMessage, setDialogMessage] = useState("");
-  const navigate = useNavigate();
-
-  const handleDetail = (post: any) => {
-    console.log("handleDetail");
-    console.log(post);
-    navigate("/post-detail", { state: post });
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [titleCount, setTitleCount] = useState([]);
+  const [posts, setPosts] = useState<any>([]);
 
   const changePage = (currPageNum: any) => {
-    console.log("change pages");
-    console.log(currPageNum);
-    console.log(page);
-    setPage(currPageNum);
-    // @ts-ignore
-    handleGetPosts(currPageNum);
+    setCurrPageNum(currPageNum);
   };
 
-  const handleGetPosts = (pageNum: any, event: any) => {
-    console.log("handleGetPosts");
+  const handleGetPosts = (pageNum: any) => {
     axios({
-      url: "/api/v1/board?size=10&sort=id&page=" + currPageNum,
+      url: `/api/v1/board?size=10&sort=${orderCommand}&page=` + pageNum,
       method: "GET",
       // headers: {
       //   Authorization: "Bearer " + localStorage.getItem("token"),
       // },
     })
       .then((res) => {
-        console.log("success");
-        console.log(res);
         setPosts(res.data.responseBody.content);
+        setTitleCount(res.data.responseBody.totalElements);
         setTotalPageNum(res.data.responseBody.totalPages);
       })
       .catch((error) => {
-        console.log(error);
         // navigate("/authentication/sign-in");
       });
   };
 
   useEffect(() => {
     // @ts-ignore
-    handleGetPosts();
-  }, []);
+    handleGetPosts(currPageNum);
+  }, [searchWord, orderCommand, currPageNum]);
 
   return (
     <BodyContainer>
       <BodyWrapper>
-        <BodyTitle renderData={posts} title={"전체 게시물"} />
+        <BodyTitle renderData={titleCount} title={"전체 게시물"} />
         <RenderContent renderData={posts} currPageNum={currPageNum} title={"전체 게시물"} />
-        <Pagination setCurrPageNum={setCurrPageNum} totalPageNum={totalPageNum} currPageNum={currPageNum} />
+        <Pagination changePage={changePage} totalPageNum={totalPageNum} currPageNum={currPageNum} />
       </BodyWrapper>
     </BodyContainer>
   );

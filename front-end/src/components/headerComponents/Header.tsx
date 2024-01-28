@@ -10,9 +10,14 @@ import MyFeed from "../feed/MyFeed";
 import WriteFeed from "../feed/WriteFeed";
 import Notification from "../notification/Notification";
 import LogOut from "../login/LogOut";
+import snsImg from "../../img/sns.jpeg";
+import { useNavigate } from "react-router-dom";
+import MyInfo from "./MyInfo";
+import HoverModal from "../modal/HoverModal";
 
 function Header() {
   const [isLogin, setIsLogin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -20,23 +25,29 @@ function Header() {
     }
   }, [localStorage.getItem("token")]);
 
+  const HandleBoard = () => {
+    navigate("/");
+  };
+
   return (
     <HeaderContainer>
-      <LogoArea>LOGO</LogoArea>
+      <LogoArea onClick={HandleBoard}>
+        <img src={snsImg} width={120} height={100} alt="snsImg" />
+      </LogoArea>
       <HeaderWrapper>
         <Feed />
         <WriteFeed />
         <MyFeed />
-        {isLogin ? (
+        {localStorage.getItem("token") ? (
           <LoginInfo>
-            <LogOut setIsLogin={setIsLogin} />
+            <MyInfo setIsLogin={setIsLogin} />
             <Notification />
           </LoginInfo>
         ) : (
-          <LoginInfo>
+          <BeforeLoginInfo>
             <Login setIsLogin={setIsLogin} />
             <Register />
-          </LoginInfo>
+          </BeforeLoginInfo>
         )}
       </HeaderWrapper>
     </HeaderContainer>
@@ -46,7 +57,6 @@ function Header() {
 export default Header;
 
 const HeaderContainer = styled.div`
-  padding: 20px 0;
   top: 0;
   display: flex;
   justify-content: center;
@@ -58,7 +68,7 @@ const HeaderContainer = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
-  flex-basis: 700px;
+  flex-basis: 800px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -68,10 +78,19 @@ const HeaderWrapper = styled.div`
 
 const LogoArea = styled.div`
   flex-basis: 10%;
-  font-size: 30px;
+  font-size: 50px;
+  cursor: pointer;
+`;
+
+const BeforeLoginInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
 `;
 
 const LoginInfo = styled.div`
+  flex-basis: 10%;
   display: flex;
   justify-content: space-between;
   align-items: center;

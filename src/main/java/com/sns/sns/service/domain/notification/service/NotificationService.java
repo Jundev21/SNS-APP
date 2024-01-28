@@ -43,7 +43,7 @@ public class NotificationService {
     public NotificationResponse makeNotification(Member member) {
 
         //알림을 받는 사용자가아니라
-        List<NotificationEntity> findNotification = notificationRepository.findAllByMember(member);
+        List<NotificationEntity> findNotification = notificationRepository.findAllByMemberOrderByCreatedTimeDesc(member);
 
         //알림을 받는 사용자의 커멘트 좋아요가 아니라 알림을 요청 한 사용자 => 코멘트나 라이크를 누른 사용자
 //        List<CommentEntity> commentPostResponseList = commentRepository.findAllByMember(findNotification.getMember());

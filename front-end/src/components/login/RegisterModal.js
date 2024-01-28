@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import HoverModal from "components/modal/HoverModal";
 
 const ModalOverlay = styled.div`
   display: ${(props) => (props.isOpen ? "block" : "none")};
@@ -112,8 +113,6 @@ const RegisterModal = (props) => {
   };
 
   const handleSignUp = (event) => {
-    console.log(userName);
-    console.log(password);
     event.preventDefault();
 
     if (password === "" || passwordConfirm === "" || email === "" || userName === "") {
@@ -131,14 +130,17 @@ const RegisterModal = (props) => {
       data: {
         userName: userName,
         password: password,
+        userEmail: email,
       },
-    }).then((res) => {
-      setDialogTitle("success");
-      setOpen(true);
-      console.log("success");
-    });
-
+    })
+      .then((res) => {})
+      .catch((error) => {
+        props.setCurrModalContent("회원가입에 실패하셨습니다.");
+        console.log(error);
+      });
+    props.setCurrModalContent("회원가입을 축하합니다.");
     props.handleModal();
+    props.handleNotiModal();
   };
 
   const openLoginModal = () => {
@@ -167,8 +169,7 @@ const RegisterModal = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+
     closeLoginModal();
   };
 
@@ -192,8 +193,7 @@ const RegisterModal = (props) => {
               <Input placeholder={"이메일"} type="email" name="email" onChange={handleEmailChange} />
               <Input placeholder={"비밀번호"} type="password" name="password" onChange={handlePasswordChange} />
               <Input placeholder={"비밀번호 확인"} type="password" name="password" onChange={handlePasswordConfirm} />
-              <Button class="btn btn-primary" onClick={handleSignUp}>
-                {" "}
+              <Button className="btn btn-primary" onClick={handleSignUp}>
                 회원가입
               </Button>
             </Form>

@@ -1,73 +1,52 @@
 import styled, { css } from "styled-components";
 
 interface DataType {
-  setCurrPageNum: React.Dispatch<React.SetStateAction<number>>;
   totalPageNum: any;
   currPageNum: number;
+  changePage: any;
 }
 
-function Pagination({ setCurrPageNum, totalPageNum, currPageNum }: DataType) {
+function Pagination({ changePage, totalPageNum, currPageNum }: DataType) {
   const handlePageNum = (pageNum: number) => {
-    setCurrPageNum(pageNum);
+    changePage(pageNum);
   };
 
   const handleBeforePage = () => {
     if (currPageNum > 0) {
-      setCurrPageNum((pre) => (pre -= 1));
+      changePage(currPageNum - 1);
     }
   };
 
   const handleNextPage = () => {
     if (currPageNum < totalPageNum.length - 1) {
-      setCurrPageNum((pre) => (pre += 1));
+      changePage(currPageNum + 1);
     }
   };
 
-  console.log("====================" + totalPageNum);
-
   return (
     <PageNationContainer>
-      {/* {totalPageNum.length !== 0 && (
-        <PaginationContianer>
-          <ul>
-            <Navi onClick={() => handleBeforePage()}>이전</Navi>
-            {totalPageNum.map((el, idx) => {
-              return (
-                <PageList
-                  key={idx}
-                  onClick={() => handlePageNum(el)}
-                  currPageColor={currPageNum === idx ? true : false}
-                >
-                  {el + 1}
-                </PageList>
-              );
-            })}
-            <Navi onClick={() => handleNextPage()}>다음</Navi>
-          </ul>
-        </PaginationContianer>
-      )} */}
       {totalPageNum !== 0 && (
         <nav aria-label="Page navigation example">
           <ul className="pagination black">
             <li className="page-item">
-              <a className="page-link" href="#" aria-label="Previous" onClick={() => handleBeforePage()}>
+              <span className="page-link" aria-label="Previous" onClick={() => handleBeforePage()}>
                 <span aria-hidden="true">&laquo;</span>
-              </a>
+              </span>
             </li>
             {[...Array(totalPageNum).keys()].map((el, idx) => {
               return (
-                <li className="page-item">
-                  <a key={idx} className="page-link" onClick={() => handlePageNum(el)}>
+                <li key={idx} className="page-item  currPageColor={currPageNum === idx ? true : false}">
+                  <span key={idx} className="page-link" onClick={() => handlePageNum(el)}>
                     {el + 1}
-                  </a>
+                  </span>
                 </li>
               );
             })}
 
             <li className="page-item">
-              <a className="page-link" href="#" aria-label="Next" onClick={() => handleNextPage()}>
+              <span className="page-link" aria-label="Next" onClick={() => handleNextPage()}>
                 <span aria-hidden="true">&raquo;</span>
-              </a>
+              </span>
             </li>
           </ul>
         </nav>

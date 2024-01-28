@@ -16,32 +16,8 @@ interface DataType {
   createdTime: any;
 }
 
-interface RenderProps {
-  currPageNum: number;
-  renderData: any;
-  title: string;
-}
-
-function RenderContent({ renderData, currPageNum, title }: RenderProps) {
-  const [pageData, setPageData] = useState([]);
-
+function RenderContent({ renderData, currPageNum, title }: any) {
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   let firstPageNum = currPageNum * 16;
-  //   let lastPageNum = firstPageNum + 15;
-  //   let getFilter = renderData.filter((el: any, idx: number) => {
-  //     return firstPageNum <= idx && lastPageNum >= idx;
-  //   });
-  //   setPageData(getFilter);
-  // }, [renderData, currPageNum]);
-  //
-  // const handleOnErrorImg = (
-  //   e: React.SyntheticEvent<HTMLImageElement, Event>
-  // ) => {
-  //   e.currentTarget.src = noImage;
-  // };
 
   const HandleCard = (data: DataType) => {
     if (title.includes("나의")) {
@@ -50,7 +26,6 @@ function RenderContent({ renderData, currPageNum, title }: RenderProps) {
     }
     navigate("/detail/feed", { state: data });
   };
-
   return (
     <>
       {renderData.length === 0 ? (
@@ -60,7 +35,7 @@ function RenderContent({ renderData, currPageNum, title }: RenderProps) {
           <div className="row row-cols-3 row-cols-md-4 g-4">
             {renderData.map((el: any, idx: number) => {
               return (
-                <div className="col" onClick={() => HandleCard(el)}>
+                <div key={idx} className="col" onClick={() => HandleCard(el)}>
                   <div className="card baseBlock">
                     <div className="card-body">
                       <h5 className="card-title">{el.title}</h5>
@@ -70,8 +45,7 @@ function RenderContent({ renderData, currPageNum, title }: RenderProps) {
                         <SubEventDate>{dayjs(el.createdTime).format("YYYY.MM.DD HH:mm")}</SubEventDate>
                         <div>
                           <SubEvent className="bi bi-hand-thumbs-up fs-6">
-                            {" "}
-                            <SubEvent>{el.totalFavoriteNums}</SubEvent>{" "}
+                            <SubEvent>{el.totalFavoriteNums}</SubEvent>
                           </SubEvent>
                           <SubEvent className="bi bi-chat-dots-fill">
                             <SubEvent>{el.totalCommitNums}</SubEvent>

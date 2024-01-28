@@ -1,48 +1,70 @@
 import styled from "styled-components";
-import Comment from "../comment/Comment";
 import axios from "axios";
 import dayjs from "dayjs";
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import HoverModal from "components/modal/HoverModal";
 
 function DetailFeedBody() {
   const { state } = useLocation();
-  console.log(state);
   const [page, setPage] = useState(0);
   const [title, setTitle] = useState(state.title);
   const [writer, setWriter] = useState(state.basicUserInfoResponse.userName);
   const [body, setBody] = useState(state.contents);
   const [date, setDate] = useState(dayjs(state.createdTime).format("YYYY-MM-DD HH:mm"));
   const [commentDate, setCommentDate] = useState();
-
+  const [isClicked, setIsClicked] = useState(state.isClicked);
   const [id, setId] = useState(state.id);
-
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [comment, setComment] = useState();
+  const [notiModal, setNotiModal] = useState(false);
+  const [currModalContent, setCurrModalContent] = useState("로그인을 해주세요");
+
+  const handleNotiModal = () => {
+    setNotiModal((e) => !e);
+  };
 
   const handleLikePost = (event) => {
-    console.log(localStorage.getItem("token"));
-    axios({
-      url: "/api/v1/favorite/board/" + id,
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((res) => {
-        console.log("success");
-        handleLikeCounts();
+    if (!localStorage.getItem("token")) {
+      handleNotiModal();
+      return;
+    }
+    if (isClicked) {
+      axios({
+        url: "/api/v1/favorite/board/" + id,
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((res) => {
+          handleLikeCounts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios({
+        url: "/api/v1/favorite/board/" + id,
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+        .then((res) => {
+          console.log("success add ", res);
+          handleLikeCounts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleLikeCounts = (event) => {
-    console.log(localStorage.getItem("token"));
     axios({
       url: "/api/v1/favorite/board/" + id,
       method: "GET",
@@ -51,8 +73,9 @@ function DetailFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success favorite");
+        console.log("result", res);
         setLikes(res.data.responseBody.favoriteNumber);
+        setIsClicked(res.data.responseBody.isClicked);
       })
       .catch((error) => {
         console.log(error);
@@ -60,29 +83,23 @@ function DetailFeedBody() {
   };
 
   const changePage = (pageNum) => {
-    console.log("change pages");
-    console.log(pageNum);
-    console.log(page);
     setPage(pageNum);
     handleGetComments(pageNum);
   };
 
   const handleGetComments = (pageNum, event) => {
-    console.log("handleGetComments");
     axios({
       // url: '/api/v1/board/' + id + '/comments?size=5&sort=id&page=' + pageNum,
       url: "/api/v1/user/board/" + id + "/comment",
       method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+      // headers: {
+      //   Authorization: "Bearer " + localStorage.getItem("token"),
+      // },
     })
       .then((res) => {
-        console.log("success comment");
-        console.log(res);
         setComments(res.data.responseBody);
         setCommentDate(res.data.createdTime);
-        setTotalPage(res.data.boardGetResponse.totalPages);
+        // setTotalPage(res.data.boardGetResponse.totalPages);
       })
       .catch((error) => {
         console.log(error);
@@ -90,7 +107,10 @@ function DetailFeedBody() {
   };
 
   const handleWriteComment = (pageNum, event) => {
-    console.log("handleWriteComment");
+    if (!localStorage.getItem("token")) {
+      handleNotiModal();
+      return;
+    }
     axios({
       url: "/api/v1/user/board/" + id + "/comment",
       method: "POST",
@@ -102,7 +122,6 @@ function DetailFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
         handleGetComments();
         setComment("");
       })
@@ -114,7 +133,7 @@ function DetailFeedBody() {
   useEffect(() => {
     handleGetComments();
     handleLikeCounts();
-  }, []);
+  }, [isClicked, comment]);
 
   return (
     <BodyContainer>
@@ -132,9 +151,15 @@ function DetailFeedBody() {
           <ContentContainer>{body}</ContentContainer>
 
           <LikesBtn onClick={handleLikePost}>
-            <p className="bi bi-hand-thumbs-up fs-6">
-              <LikeNumber>{likes}</LikeNumber>
-            </p>
+            {isClicked ? (
+              <p className="bi bi-hand-thumbs-up-fill fs-6">
+                <LikeNumber>{likes}</LikeNumber>
+              </p>
+            ) : (
+              <p className="bi bi-hand-thumbs-up fs-6">
+                <LikeNumber>{likes}</LikeNumber>
+              </p>
+            )}
           </LikesBtn>
         </MainContent>
         <CommentContainer>
@@ -143,13 +168,10 @@ function DetailFeedBody() {
           {comments.map((comment) => (
             <CommentsData>
               <span>
-                <i class="bi bi-person-circle"></i>
+                <i className="bi bi-person-circle"></i>
               </span>
-
               <CommentUser> {comment.userInfo.userName}</CommentUser>
-
               <div> {comment.commentInfo.content}</div>
-
               <CommentDate>{dayjs(comment.commentInfo.updateDate).format("YYYY.MM.DD HH:mm")}</CommentDate>
             </CommentsData>
           ))}
@@ -165,6 +187,7 @@ function DetailFeedBody() {
             </form>
           </CommentContainer>
         </CommentContainer>
+        {notiModal && <HoverModal handleModal={handleNotiModal} currModalContent={currModalContent} />}
       </BodyWrapper>
     </BodyContainer>
   );

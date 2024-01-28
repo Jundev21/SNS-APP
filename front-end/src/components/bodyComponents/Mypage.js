@@ -28,7 +28,6 @@ function Mypage() {
   };
 
   const handleUserInfo = () => {
-    console.log("handleGetPosts");
     axios({
       url: "/api/v1/users",
       method: "GET",
@@ -98,7 +97,7 @@ function Mypage() {
     setNotiModal(true);
   };
 
-  const handleDelete = () => {
+  async function handleDelete() {
     axios({
       url: "/api/v1/users",
       method: "DELETE",
@@ -111,13 +110,13 @@ function Mypage() {
         setCurrModalContent("회원탈퇴가 완료되었습니다.");
         localStorage.removeItem("token");
         navigate("/");
+        setNotiModal(true);
       })
       .catch((error) => {
         setCurrModalContent("회원탈퇴에 실패하였습니다.");
         // navigate("/authentication/sign-in");
       });
-    setNotiModal(true);
-  };
+  }
 
   return (
     <BodyContainer>

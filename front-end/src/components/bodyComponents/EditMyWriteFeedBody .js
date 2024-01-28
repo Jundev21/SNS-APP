@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import Comment from "../comment/Comment";
 import axios from "axios";
 import dayjs from "dayjs";
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import HoverModal from "components/modal/HoverModal";
 
 function EditMyWriteFeedBody() {
   const { state } = useLocation();
@@ -14,17 +14,20 @@ function EditMyWriteFeedBody() {
   const [body, setBody] = useState(state.contents);
   const [date, setDate] = useState(dayjs(state.createdTime).format("YYYY-MM-DD HH:mm"));
   const [commentDate, setCommentDate] = useState();
-
   const [id, setId] = useState(state.id);
-
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [comment, setComment] = useState();
+  const [notiModal, setNotiModal] = useState(false);
+  const [currModalContent, setCurrModalContent] = useState("");
+
   const navigate = useNavigate();
+  const handleNotiModal = () => {
+    setNotiModal((e) => !e);
+  };
 
   const handleLikePost = (event) => {
-    console.log(localStorage.getItem("token"));
     axios({
       url: "/api/v1/favorite/board/" + id,
       method: "POST",
@@ -33,7 +36,6 @@ function EditMyWriteFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
         handleLikeCounts();
       })
       .catch((error) => {
@@ -42,7 +44,6 @@ function EditMyWriteFeedBody() {
   };
 
   const handleLikeCounts = (event) => {
-    console.log(localStorage.getItem("token"));
     axios({
       url: "/api/v1/favorite/board/" + id,
       method: "GET",
@@ -51,7 +52,6 @@ function EditMyWriteFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success favorite");
         setLikes(res.data.responseBody.favoriteNumber);
       })
       .catch((error) => {
@@ -60,15 +60,11 @@ function EditMyWriteFeedBody() {
   };
 
   const changePage = (pageNum) => {
-    console.log("change pages");
-    console.log(pageNum);
-    console.log(page);
     setPage(pageNum);
     handleGetComments(pageNum);
   };
 
   const handleGetComments = (pageNum, event) => {
-    console.log("handleGetComments");
     axios({
       // url: '/api/v1/board/' + id + '/comments?size=5&sort=id&page=' + pageNum,
       url: "/api/v1/user/board/" + id + "/comment",
@@ -78,8 +74,6 @@ function EditMyWriteFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success comment");
-        console.log(res);
         setComments(res.data.responseBody);
         setCommentDate(res.data.createdTime);
         setTotalPage(res.data.boardGetResponse.totalPages);
@@ -90,7 +84,6 @@ function EditMyWriteFeedBody() {
   };
 
   const handleWriteComment = (pageNum, event) => {
-    console.log("handleWriteComment");
     axios({
       url: "/api/v1/user/board/" + id + "/comment",
       method: "POST",
@@ -102,7 +95,6 @@ function EditMyWriteFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
         handleGetComments();
         setComment("");
       })
@@ -112,12 +104,6 @@ function EditMyWriteFeedBody() {
   };
 
   const updateWritePost = (data) => {
-    console.log(localStorage.getItem("token"));
-    console.log("title : " + title);
-    console.log("body : " + body);
-    console.log("id : " + id);
-    // String title,
-    // String content
     axios({
       url: "/api/v1/board/" + id,
       method: "PUT",
@@ -130,8 +116,6 @@ function EditMyWriteFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
-
         navigate("/detail/my/feed", { state: { ...data, title: title, contents: body } });
       })
       .catch((error) => {
@@ -140,13 +124,10 @@ function EditMyWriteFeedBody() {
   };
 
   const CancleEdit = () => {
-    console.log("handleModify");
-    console.log(state);
     navigate("/detail/my/feed", { state: state });
   };
 
   const handleDelete = (id) => {
-    console.log("handleDelete " + id);
     axios({
       url: "/api/v1/board/" + id,
       method: "DELETE",
@@ -155,10 +136,9 @@ function EditMyWriteFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
-        console.log(res);
-        console.log(page);
+        setCurrModalContent("게시물이 삭제되었습니다.");
         navigate("/my/feed");
+        setNotiModal(true);
       })
       .catch((error) => {
         console.log(error);
@@ -226,6 +206,8 @@ function EditMyWriteFeedBody() {
             </form>
           </CommentContainer>
         </CommentContainer>
+
+        {notiModal && <HoverModal handleModal={handleNotiModal} currModalContent={currModalContent} />}
       </BodyWrapper>
     </BodyContainer>
   );

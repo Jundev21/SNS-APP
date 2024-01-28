@@ -46,17 +46,13 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
 
             if (TOKEN_IN_PARAM_URLS.contains(request.getRequestURI())) {
-                log.error("파라미터에서 토큰값을 가지고오지 못했습니다.");
                 jwtToken = request.getQueryString().split("=")[1].trim();
             } else if (getHeader == null || !getHeader.startsWith("Bearer ")) {
-                log.error("헤더에서 토큰값을 가지고오지 못했습니다.");
-                log.error(request.getRequestURI());
                 filterChain.doFilter(request, response);
                 return;
             } else {
                 jwtToken = getHeader.split(" ")[1].trim();
             }
-
 
             if (jwtTokenUtil.isTokenExpired(jwtToken)) {
                 log.error("토큰 만료되었습니다.");

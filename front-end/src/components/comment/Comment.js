@@ -11,7 +11,6 @@ function Comment({ state, handleGetComments }) {
   const [id, setId] = useState(state.id);
 
   const handleWriteComment = (pageNum, event) => {
-    console.log("handleWriteComment");
     axios({
       url: "/api/v1/user/board/" + id + "/comment",
       method: "POST",
@@ -23,7 +22,6 @@ function Comment({ state, handleGetComments }) {
       },
     })
       .then((res) => {
-        console.log("success");
         handleGetComments();
       })
       .catch((error) => {

@@ -4,23 +4,41 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Notification() {
-  const [page, setPage] = useState(0);
-  const [render, setRender] = useState(false);
   const [alarms, setAlarms] = useState([]);
-  const [totalPage, setTotalPage] = useState(0);
-
+  const [newAlarms, setNewAlarms] = useState(0);
+  const [welcomeAlarms, setWelcomeAlarms] = useState("");
+  const [alarmEvent, setAlarmEvent] = useState(undefined);
   const navigate = useNavigate();
 
-  const changePage = (pageNum) => {
-    console.log("change pages");
-    console.log(pageNum);
-    console.log(page);
-    setPage(pageNum);
-    handleGetAlarm(pageNum);
-  };
+  let eventSource = undefined;
 
-  const handleGetAlarm = (pageNum, event) => {
-    console.log("handleGetAlarm");
+  useEffect(() => {
+    handleGetAlarm();
+
+    eventSource = new EventSource("http://localhost:8080/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
+
+    setAlarmEvent(eventSource);
+
+    eventSource.addEventListener("open", function (event) {
+      console.log("connection opened");
+      setWelcomeAlarms(event.data);
+    });
+
+    eventSource.addEventListener("alarm", function (event) {
+      setNewAlarms(1);
+      handleGetAlarm();
+    });
+
+    eventSource.addEventListener("error", function (event) {
+      console.log(event.target.readyState);
+      if (event.target.readyState === EventSource.CLOSED) {
+        console.log("eventsource closed (" + event.target.readyState + ")");
+      }
+      eventSource.close();
+    });
+  }, []);
+
+  const handleGetAlarm = () => {
     axios({
       url: "/api/v1/users/notification",
       method: "GET",
@@ -29,11 +47,7 @@ function Notification() {
       },
     })
       .then((res) => {
-        console.log("Success alram");
-        console.log("success token");
-        console.log(res);
-
-        setAlarms(res.data.responseBody.notificationType);
+        setAlarms(res.data.responseBody);
         // setTotalPage(res.data.result.totalPages);
       })
       .catch((error) => {
@@ -42,14 +56,15 @@ function Notification() {
       });
   };
 
-  // useEffect(() => {
-  //   handleGetAlarm();
-  // }, [alarms]);
+  const HandleNotification = () => {
+    setNewAlarms(0);
+    navigate("/detail/my/notification", { state: alarms });
+  };
 
   return (
     <NotiParent>
-      <div class="bi bi-bell-fill fs-5"></div>
-      {alarms.length !== 0 && <NotiChild>{alarms.length}</NotiChild>}
+      <div className="bi bi-bell-fill fs-3" onClick={HandleNotification}></div>
+      {newAlarms !== 0 && <NotiChild />}
     </NotiParent>
   );
 }
@@ -60,6 +75,7 @@ const NotiParent = styled.span`
   display: flex;
   align-items: center;
   position: relative;
+  color: #807979;
   cursor: pointer;
 `;
 
@@ -69,7 +85,7 @@ const NotiChild = styled.span`
   right: -15px;
   background-color: red;
   color: white;
-  font-size: 12px;
-  padding: 2px 7px;
-  border-radius: 80%;
+  font-size: 16px;
+  padding: 8px 8px;
+  border-radius: 100%;
 `;

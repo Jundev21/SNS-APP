@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Comment from "../comment/Comment";
 import axios from "axios";
 import dayjs from "dayjs";
+import HoverModal from "components/modal/HoverModal";
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -24,7 +25,6 @@ function MyDetailFeedBody() {
   const navigate = useNavigate();
 
   const handleLikePost = (event) => {
-    console.log(localStorage.getItem("token"));
     axios({
       url: "/api/v1/favorite/board/" + id,
       method: "POST",
@@ -33,25 +33,22 @@ function MyDetailFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
         handleLikeCounts();
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   };
 
   const handleLikeCounts = (event) => {
-    console.log(localStorage.getItem("token"));
     axios({
       url: "/api/v1/favorite/board/" + id,
       method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+      // headers: {
+      //   Authorization: "Bearer " + localStorage.getItem("token"),
+      // },
     })
       .then((res) => {
-        console.log("success favorite");
         setLikes(res.data.responseBody.favoriteNumber);
       })
       .catch((error) => {
@@ -60,29 +57,23 @@ function MyDetailFeedBody() {
   };
 
   const changePage = (pageNum) => {
-    console.log("change pages");
-    console.log(pageNum);
-    console.log(page);
     setPage(pageNum);
     handleGetComments(pageNum);
   };
 
   const handleGetComments = (pageNum, event) => {
-    console.log("handleGetComments");
     axios({
       // url: '/api/v1/board/' + id + '/comments?size=5&sort=id&page=' + pageNum,
       url: "/api/v1/user/board/" + id + "/comment",
       method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+      // headers: {
+      //   Authorization: "Bearer " + localStorage.getItem("token"),
+      // },
     })
       .then((res) => {
-        console.log("success comment");
-        console.log(res);
         setComments(res.data.responseBody);
         setCommentDate(res.data.createdTime);
-        setTotalPage(res.data.boardGetResponse.totalPages);
+        // setTotalPage(res.data.boardGetResponse.totalPages);
       })
       .catch((error) => {
         console.log(error);
@@ -90,7 +81,6 @@ function MyDetailFeedBody() {
   };
 
   const handleWriteComment = (pageNum, event) => {
-    console.log("handleWriteComment");
     axios({
       url: "/api/v1/user/board/" + id + "/comment",
       method: "POST",
@@ -102,7 +92,6 @@ function MyDetailFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
         handleGetComments();
         setComment("");
       })
@@ -112,13 +101,10 @@ function MyDetailFeedBody() {
   };
 
   const handleModify = () => {
-    console.log("handleModify");
-    console.log(state);
     navigate("/edit/my/feed", { state: state });
   };
 
   const handleDelete = (id) => {
-    console.log("handleDelete " + id);
     axios({
       url: "/api/v1/board/" + id,
       method: "DELETE",
@@ -127,9 +113,6 @@ function MyDetailFeedBody() {
       },
     })
       .then((res) => {
-        console.log("success");
-        console.log(res);
-        console.log(page);
         navigate("/my/feed");
       })
       .catch((error) => {
@@ -173,10 +156,10 @@ function MyDetailFeedBody() {
         <CommentContainer>
           <MainSubTitle>댓글</MainSubTitle>
 
-          {comments.map((comment) => (
-            <CommentsData>
+          {comments.map((comment, idx) => (
+            <CommentsData key={idx}>
               <span>
-                <i class="bi bi-person-circle"></i>
+                <i className="bi bi-person-circle"></i>
               </span>
               <CommentUser> {comment.userInfo.userName}</CommentUser>
               <div> {comment.commentInfo.content}</div>
