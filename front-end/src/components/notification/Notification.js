@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,31 +13,71 @@ function Notification() {
   let eventSource = undefined;
 
   useEffect(() => {
-    handleGetAlarm();
-
     eventSource = new EventSource("/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
 
-    setAlarmEvent(eventSource);
-
-    eventSource.addEventListener("open", function (event) {
+    const handleOpen = (event) => {
       console.log("connection opened");
       setWelcomeAlarms(event.data);
-    });
+    };
 
-    eventSource.addEventListener("alarm", function (event) {
+    const handleAlarm = (event) => {
       setNewAlarms(1);
       handleGetAlarm();
-    });
+    };
 
-    eventSource.addEventListener("error", function (event) {
+    const handleError = (event) => {
       if (event.target.readyState === EventSource.CLOSED) {
         console.log("eventsource closed (" + event.target.readyState + ")");
       }
       eventSource.close();
-    });
-  }, []);
+    };
 
-  const handleGetAlarm = () => {
+    eventSource.addEventListener("open", handleOpen);
+    eventSource.addEventListener("alarm", handleAlarm);
+    eventSource.addEventListener("error", handleError);
+
+    return () => {
+      eventSource.removeEventListener("open", handleOpen);
+      eventSource.removeEventListener("alarm", handleAlarm);
+      eventSource.removeEventListener("error", handleError);
+      eventSource.close();
+    };
+  }, [handleGetAlarm]);
+
+  useEffect(() => {
+    handleGetAlarm();
+  }, [handleGetAlarm, newAlarms]);
+
+  // useEffect(() => {
+  //   handleGetAlarm();
+
+  //   eventSource = new EventSource("/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
+
+  //   setAlarmEvent(eventSource);
+
+  //   eventSource.addEventListener("open", function (event) {
+  //     console.log("connection opened");
+  //     setWelcomeAlarms(event.data);
+  //   });
+
+  //   eventSource.addEventListener("alarm", function (event) {
+  //     setNewAlarms(1);
+  //     handleGetAlarm();
+  //   });
+
+  //   eventSource.addEventListener("error", function (event) {
+  //     if (event.target.readyState === EventSource.CLOSED) {
+  //       console.log("eventsource closed (" + event.target.readyState + ")");
+  //     }
+  //     eventSource.close();
+  //   });
+
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // }, []);
+
+  const handleGetAlarm = useCallback(() => {
     axios({
       url: "/api/v1/users/notification",
       method: "GET",
@@ -53,7 +93,7 @@ function Notification() {
         console.log(error);
         // navigate('/authentication/sign-in');
       });
-  };
+  }, []);
 
   const HandleNotification = () => {
     setNewAlarms(0);
