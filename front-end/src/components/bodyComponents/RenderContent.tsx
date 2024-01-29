@@ -35,12 +35,12 @@ function RenderContent({ renderData, currPageNum, title }: any) {
           <div className="row row-cols-3 row-cols-md-4 g-4">
             {renderData.map((el: any, idx: number) => {
               return (
-                <div key={idx} className="col" onClick={() => HandleCard(el)}>
+                <CardWrapper key={idx} className="col" onClick={() => HandleCard(el)}>
                   <div className="card baseBlock">
                     <div className="card-body">
-                      <h5 className="card-title">{el.title}</h5>
+                      <Title className="card-title">{el.title}</Title>
                       <h6 className="card-subtitle mb-2 text-body-secondary">{el.basicUserInfoResponse.userName}</h6>
-                      <p className="card-text">{el.contents}</p>
+                      <CardContent className="card-text">{el.contents}</CardContent>
                       <SubInfo>
                         <SubEventDate>{dayjs(el.createdTime).format("YYYY.MM.DD HH:mm")}</SubEventDate>
                         <div>
@@ -54,7 +54,7 @@ function RenderContent({ renderData, currPageNum, title }: any) {
                       </SubInfo>
                     </div>
                   </div>
-                </div>
+                </CardWrapper>
               );
             })}
           </div>
@@ -103,13 +103,11 @@ const Warnning = styled.div`
   font-weight: bold;
 `;
 
-const Title = styled.div`
-  width: 100%;
-  font-weight: 400;
+const Title = styled.h5`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 `;
 
 const Price = styled.div`
@@ -131,3 +129,17 @@ const SubEvent = styled.span`
 `;
 
 const CardContainer = styled.div``;
+
+const CardWrapper = styled.div`
+  height: 100%;
+`;
+
+const CardContent = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-height: 10em;
+
+  line-height: 1.5em;
+  padding-bottom: 10px;
+`;

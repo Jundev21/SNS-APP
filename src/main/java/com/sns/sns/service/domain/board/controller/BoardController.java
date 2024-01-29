@@ -55,7 +55,7 @@ public class BoardController {
 
     @GetMapping
     public Response<Page<BoardGetResponse>> getBoard(
-            @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable
+            Pageable pageable
     ){
         return Response.success(boardService.getBoard(pageable));
     }

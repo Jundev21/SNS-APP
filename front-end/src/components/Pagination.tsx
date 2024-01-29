@@ -104,6 +104,7 @@ const PageNationContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: end;
+  margin-top: 50px;
 `;
 
 //pagenation 로직
