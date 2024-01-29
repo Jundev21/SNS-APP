@@ -5,11 +5,13 @@ import { useAppSelector } from "../../hooks";
 import Pagination from "../Pagination";
 import RenderContent from "./RenderContent";
 import BodyTitle from "./BodyTitle";
+import LoadingAnimation from "../modal/LoadingAnimation";
 
 function Body() {
   const { searchWord, orderCommand } = useAppSelector((state) => state.searchState);
   const [currPageNum, setCurrPageNum] = useState(0);
   const [totalPageNum, setTotalPageNum] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [titleCount, setTitleCount] = useState([]);
   const [posts, setPosts] = useState<any>([]);
@@ -27,6 +29,7 @@ function Body() {
       // },
     })
       .then((res) => {
+        setIsLoading(false);
         setPosts(res.data.responseBody.content);
         setTitleCount(res.data.responseBody.totalElements);
         setTotalPageNum(res.data.responseBody.totalPages);
@@ -44,9 +47,15 @@ function Body() {
   return (
     <BodyContainer>
       <BodyWrapper>
-        <BodyTitle renderData={titleCount} title={"전체 게시물"} />
-        <RenderContent renderData={posts} currPageNum={currPageNum} title={"전체 게시물"} />
-        <Pagination changePage={changePage} totalPageNum={totalPageNum} currPageNum={currPageNum} />
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <>
+            <BodyTitle renderData={titleCount} title={"전체 게시물"} />
+            <RenderContent renderData={posts} currPageNum={currPageNum} title={"전체 게시물"} />
+            <Pagination changePage={changePage} totalPageNum={totalPageNum} currPageNum={currPageNum} />
+          </>
+        )}
       </BodyWrapper>
     </BodyContainer>
   );
