@@ -100,18 +100,6 @@ const RegisterModal = (props) => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  const [open, setOpen] = React.useState(false);
-  const [dialogTitle, setDialogTitle] = React.useState("");
-  const [dialogMessage, setDialogMessage] = React.useState("");
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const handleSignUp = (event) => {
     event.preventDefault();
 
@@ -140,10 +128,6 @@ const RegisterModal = (props) => {
     props.setCurrModalContent("회원가입을 축하합니다.");
     props.handleModal();
     props.handleNotiModal();
-  };
-
-  const openLoginModal = () => {
-    setShowLoginModal(true);
   };
 
   const closeLoginModal = () => {

@@ -15,7 +15,7 @@ function Notification() {
   useEffect(() => {
     handleGetAlarm();
 
-    eventSource = new EventSource("http://localhost:8080/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
+    eventSource = new EventSource("http://localhost:8080/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"));
 
     setAlarmEvent(eventSource);
 
@@ -25,7 +25,6 @@ function Notification() {
     });
 
     eventSource.addEventListener("alarm", function (event) {
-      setNewAlarms(1);
       handleGetAlarm();
     });
 
@@ -47,6 +46,7 @@ function Notification() {
     })
       .then((res) => {
         setAlarms(res.data.responseBody);
+        setNewAlarms(1);
         // setTotalPage(res.data.result.totalPages);
       })
       .catch((error) => {
@@ -63,7 +63,7 @@ function Notification() {
   return (
     <NotiParent>
       <div className="bi bi-bell-fill fs-3" onClick={HandleNotification}></div>
-      {newAlarms !== 0 && <NotiChild />}
+      {newAlarms !== 0 ? <NotiChild /> : <Warnning> 알림이 없습니다.</Warnning>}
     </NotiParent>
   );
 }
@@ -87,4 +87,12 @@ const NotiChild = styled.span`
   font-size: 16px;
   padding: 8px 8px;
   border-radius: 100%;
+`;
+
+const Warnning = styled.div`
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 `;
