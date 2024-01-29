@@ -30,7 +30,6 @@ function Notification() {
     });
 
     eventSource.addEventListener("error", function (event) {
-      console.log(event.target.readyState);
       if (event.target.readyState === EventSource.CLOSED) {
         console.log("eventsource closed (" + event.target.readyState + ")");
       }

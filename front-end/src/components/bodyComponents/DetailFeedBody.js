@@ -73,7 +73,6 @@ function DetailFeedBody() {
       },
     })
       .then((res) => {
-        console.log("result", res);
         setLikes(res.data.responseBody.favoriteNumber);
         setIsClicked(res.data.responseBody.isClicked);
       })
