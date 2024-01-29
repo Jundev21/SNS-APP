@@ -20,7 +20,7 @@ function Body() {
 
   const handleGetPosts = (pageNum: any) => {
     axios({
-      url: `/api/v1/board?size=10&sort=${orderCommand}&page=` + pageNum,
+      url: `/api/v1/board?size=10&sort=${orderCommand},desc&page=` + pageNum,
       method: "GET",
       // headers: {
       //   Authorization: "Bearer " + localStorage.getItem("token"),
