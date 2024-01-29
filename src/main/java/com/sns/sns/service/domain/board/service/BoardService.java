@@ -73,7 +73,8 @@ public class BoardService {
     }
     @Transactional
     public Page<BoardGetResponse> getBoard(Pageable pageable) {
-        Page<BoardEntity> board = boardRepository.findAllOrderByCreatedTimeDesc(pageable);
+
+        Page<BoardEntity> board = boardRepository.findAll(pageable);
         return board.map(BoardGetResponse::boardGetResponse);
     }
     @Transactional

@@ -55,7 +55,6 @@ function DetailFeedBody() {
         },
       })
         .then((res) => {
-          console.log("success add ", res);
           handleLikeCounts();
         })
         .catch((error) => {

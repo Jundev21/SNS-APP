@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,11 @@ public class BoardEntity extends BaseTimeEntity {
     private List<CommentEntity> commentEntityList = new ArrayList<>();
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
     private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
+
+    @Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")
+    private long countFavorite;
+    @Formula("(select count(*) from comment_entity where comment_entity.board_entity_id=id)")
+    private long countComments;
 
     //좋아요는 순서 상관없이 추가 삭제가 유용함으로 이부분 map 으로 리팩토링 해보기
     public BoardEntity(

@@ -13,6 +13,8 @@ import com.sns.sns.service.domain.member.model.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +55,7 @@ public class BoardController {
 
     @GetMapping
     public Response<Page<BoardGetResponse>> getBoard(
-            Pageable pageable
+            @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable
     ){
         return Response.success(boardService.getBoard(pageable));
     }
