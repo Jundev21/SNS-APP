@@ -80,8 +80,8 @@ const NotiParent = styled.span`
 
 const NotiChild = styled.span`
   position: absolute;
-  top: -10px;
-  right: -15px;
+  top: -3px;
+  right: -12px;
   background-color: red;
   color: white;
   font-size: 16px;

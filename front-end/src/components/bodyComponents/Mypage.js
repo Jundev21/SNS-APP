@@ -1,13 +1,9 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAppSelector } from "../../hooks";
-import Pagination from "../Pagination";
-import RenderContent from "./RenderContent";
-import BodyTitle from "./BodyTitle";
 import { useNavigate, useLocation } from "react-router-dom";
-import dayjs from "dayjs";
 import HoverModal from "components/modal/HoverModal";
+import LoadingAnimation from "components/modal/LoadingAnimation";
 
 function Mypage() {
   const [password, setPassword] = useState("");
@@ -15,14 +11,11 @@ function Mypage() {
   const [email, setEmail] = useState("");
   const [userInfo, setUserInfo] = useState("");
   const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [notiModal, setNotiModal] = useState(false);
   const [currModalContent, setCurrModalContent] = useState("");
 
-  const handleModal = () => {
-    setModalOpen((e) => !e);
-  };
   const handleNotiModal = () => {
     setNotiModal((e) => !e);
     if (notiModal) {
@@ -39,6 +32,7 @@ function Mypage() {
       },
     })
       .then((res) => {
+        setIsLoading(false);
         setUserInfo(res.data.responseBody);
       })
       .catch((error) => {
@@ -90,13 +84,12 @@ function Mypage() {
         password: password,
       },
     })
-      .then((res) => {
-        setCurrModalContent("수정이 완료되었습니다.");
-      })
+      .then((res) => {})
       .catch((error) => {
         setCurrModalContent("수정 실패하였습니다.");
         // navigate("/authentication/sign-in");
       });
+    setCurrModalContent("수정이 완료되었습니다.");
     setNotiModal(true);
   };
 
@@ -125,43 +118,47 @@ function Mypage() {
   return (
     <BodyContainer>
       <BodyWrapper>
-        <MemberContainer>
-          <LeftContainer>
-            <UserIcon>
-              <i className="bi bi-person-circle"> </i>
-            </UserIcon>
-            <InputFile>
-              <label htmlFor="formFile" className="form-label"></label>
-              <input className="form-control" type="file" id="formFile" />
-            </InputFile>
-          </LeftContainer>
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <MemberContainer>
+            <LeftContainer>
+              <UserIcon>
+                <i className="bi bi-person-circle"> </i>
+              </UserIcon>
+              <InputFile>
+                <label htmlFor="formFile" className="form-label"></label>
+                <input className="form-control" type="file" id="formFile" />
+              </InputFile>
+            </LeftContainer>
 
-          <RightContainer>
-            <Form>
-              <label>아이디</label>
-              <div>{userInfo.userName}</div>
-              <label>이메일</label>
-              <Input placeholder={userInfo.userEmail} type="email" name="password" onChange={handleEmailChange} />
-              <label>비밀번호</label>
-              <Input placeholder={"비밀번호"} type="password" name="password" onChange={handlePasswordChange} />
-              <label>비밀번호 확인</label>
-              <Input placeholder={"비밀번호 확인"} type="password" name="password" onChange={handlePasswordConfirm} />
-              <div className="d-grid gap-2 d-md-block mt-4 d-md-flex justify-content-md-center">
-                <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handleDelete}>
-                  탈퇴
-                </button>
-                <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handleClose}>
-                  취소
-                </button>
-                <button type="button" className="btn btn-primary px-5" onClick={handleUpdateInfo}>
-                  저장
-                </button>
-              </div>
-            </Form>
+            <RightContainer>
+              <Form>
+                <label>아이디</label>
+                <div>{userInfo.userName}</div>
+                <label>이메일</label>
+                <Input placeholder={userInfo.userEmail} type="email" name="password" onChange={handleEmailChange} />
+                <label>비밀번호</label>
+                <Input placeholder={"비밀번호"} type="password" name="password" onChange={handlePasswordChange} />
+                <label>비밀번호 확인</label>
+                <Input placeholder={"비밀번호 확인"} type="password" name="password" onChange={handlePasswordConfirm} />
+                <div className="d-grid gap-2 d-md-block mt-4 d-md-flex justify-content-md-center">
+                  <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handleDelete}>
+                    탈퇴
+                  </button>
+                  <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handleClose}>
+                    취소
+                  </button>
+                  <button type="button" className="btn btn-primary px-5" onClick={handleUpdateInfo}>
+                    저장
+                  </button>
+                </div>
+              </Form>
 
-            {notiModal && <HoverModal handleModal={handleNotiModal} currModalContent={currModalContent} />}
-          </RightContainer>
-        </MemberContainer>
+              {notiModal && <HoverModal handleModal={handleNotiModal} currModalContent={currModalContent} />}
+            </RightContainer>
+          </MemberContainer>
+        )}
       </BodyWrapper>
     </BodyContainer>
   );

@@ -135,8 +135,7 @@ const RegisterModal = (props) => {
     })
       .then((res) => {})
       .catch((error) => {
-        props.setCurrModalContent("회원가입에 실패하셨습니다.");
-        console.log(error);
+        props.setCurrModalContent(error.response.data.responseCode);
       });
     props.setCurrModalContent("회원가입을 축하합니다.");
     props.handleModal();

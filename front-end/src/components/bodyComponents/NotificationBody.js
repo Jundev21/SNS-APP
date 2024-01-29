@@ -16,7 +16,7 @@ function NotificationBody() {
         <NotificationContainer>
           {state.senderInfo.countVisited === 1 && (
             <NotificationContent>
-              <Message>{state.senderInfo.userName} 님 환영합니다.</Message>
+              <Message>{state.senderInfo.id} 님 환영합니다.</Message>
             </NotificationContent>
           )}
           {state.notificationType.map((el, idx) => {

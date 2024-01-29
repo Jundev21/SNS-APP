@@ -5,23 +5,18 @@ import { useAppSelector } from "../../hooks";
 import Pagination from "../Pagination";
 import RenderContent from "./RenderContent";
 import BodyTitle from "./BodyTitle";
-import { useNavigate } from "react-router-dom";
+import LoadingAnimation from "components/modal/LoadingAnimation";
 
 function MyFeedBody() {
   const { searchWord, orderCommand } = useAppSelector((state) => state.searchState);
-  const [renderData, setRendering] = useState([]);
   const [currPageNum, setCurrPageNum] = useState(0);
   const [totalPageNum, setTotalPageNum] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [titleCount, setTitleCount] = useState([]);
-  //===========================================
-
   const [page, setPage] = useState(0);
   const [render, setRender] = useState(false);
   const [posts, setPosts] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
-
-  const navigate = useNavigate();
 
   const changePage = (pageNum) => {
     setPage(pageNum);
@@ -29,7 +24,7 @@ function MyFeedBody() {
     handleGetPosts(pageNum);
   };
 
-  const handleGetPosts = (pageNum, event, sortType) => {
+  const handleGetPosts = (pageNum) => {
     axios({
       url: `/api/v1/board/user?size=10&sort=${orderCommand}&page=` + pageNum,
       method: "GET",
@@ -38,6 +33,7 @@ function MyFeedBody() {
       },
     })
       .then((res) => {
+        setIsLoading(false);
         setPosts(res.data.responseBody.content);
         setTitleCount(res.data.responseBody.totalElements);
         setTotalPage(res.data.responseBody.totalPages);
@@ -55,9 +51,15 @@ function MyFeedBody() {
   return (
     <BodyContainer>
       <BodyWrapper>
-        <BodyTitle renderData={titleCount} title={"나의 게시물"} handleGetPosts={handleGetPosts} />
-        <RenderContent renderData={posts} currPageNum={currPageNum} title={"나의 게시물"} />
-        <Pagination changePage={changePage} totalPageNum={totalPageNum} currPageNum={currPageNum} />
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <>
+            <BodyTitle renderData={titleCount} title={"나의 게시물"} handleGetPosts={handleGetPosts} />
+            <RenderContent renderData={posts} currPageNum={currPageNum} title={"나의 게시물"} />
+            <Pagination changePage={changePage} totalPageNum={totalPageNum} currPageNum={currPageNum} />
+          </>
+        )}
       </BodyWrapper>
     </BodyContainer>
   );
