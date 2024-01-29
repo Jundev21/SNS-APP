@@ -25,6 +25,9 @@ function Mypage() {
   };
   const handleNotiModal = () => {
     setNotiModal((e) => !e);
+    if (notiModal) {
+      navigate("/");
+    }
   };
 
   const handleUserInfo = () => {
@@ -109,13 +112,14 @@ function Mypage() {
       .then((res) => {
         setCurrModalContent("회원탈퇴가 완료되었습니다.");
         localStorage.removeItem("token");
-        navigate("/");
-        setNotiModal(true);
+        // navigate("/");
+        // setNotiModal(true);
       })
       .catch((error) => {
         setCurrModalContent("회원탈퇴에 실패하였습니다.");
         // navigate("/authentication/sign-in");
       });
+    setNotiModal(true);
   }
 
   return (
