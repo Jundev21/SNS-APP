@@ -163,8 +163,8 @@ function DetailFeedBody() {
         <CommentContainer>
           <MainSubTitle>댓글</MainSubTitle>
 
-          {comments.map((comment) => (
-            <CommentsData>
+          {comments.map((comment, idx) => (
+            <CommentsData key={idx}>
               <span>
                 <i className="bi bi-person-circle"></i>
               </span>

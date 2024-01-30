@@ -6,76 +6,34 @@ import { useNavigate } from "react-router-dom";
 function Notification() {
   const [alarms, setAlarms] = useState([]);
   const [newAlarms, setNewAlarms] = useState(0);
-  const [welcomeAlarms, setWelcomeAlarms] = useState("");
-  const [alarmEvent, setAlarmEvent] = useState(undefined);
   const navigate = useNavigate();
 
-  let eventSource = undefined;
-
   useEffect(() => {
-    eventSource = new EventSource("/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
+    handleGetAlarm();
 
-    const handleOpen = (event) => {
-      console.log("connection opened");
-      setWelcomeAlarms(event.data);
-    };
+    const eventSource = new EventSource("/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
 
-    const handleAlarm = (event) => {
+    eventSource.addEventListener("open", function (event) {
+      console.log("connection is connected");
+    });
+
+    eventSource.addEventListener("alarm", function (event) {
       setNewAlarms(1);
       handleGetAlarm();
-    };
+    });
 
-    const handleError = (event) => {
+    eventSource.addEventListener("error", function (event) {
       if (event.target.readyState === EventSource.CLOSED) {
         console.log("eventsource closed (" + event.target.readyState + ")");
       }
       eventSource.close();
-    };
-
-    eventSource.addEventListener("open", handleOpen);
-    eventSource.addEventListener("alarm", handleAlarm);
-    eventSource.addEventListener("error", handleError);
+    });
 
     return () => {
-      eventSource.removeEventListener("open", handleOpen);
-      eventSource.removeEventListener("alarm", handleAlarm);
-      eventSource.removeEventListener("error", handleError);
       eventSource.close();
+      console.log("connection is disconnected");
     };
-  }, [handleGetAlarm]);
-
-  useEffect(() => {
-    handleGetAlarm();
-  }, [handleGetAlarm, newAlarms]);
-
-  // useEffect(() => {
-  //   handleGetAlarm();
-
-  //   eventSource = new EventSource("/api/v1/users/notification/subscribe?token=" + localStorage.getItem("token"), { withCredentials: true });
-
-  //   setAlarmEvent(eventSource);
-
-  //   eventSource.addEventListener("open", function (event) {
-  //     console.log("connection opened");
-  //     setWelcomeAlarms(event.data);
-  //   });
-
-  //   eventSource.addEventListener("alarm", function (event) {
-  //     setNewAlarms(1);
-  //     handleGetAlarm();
-  //   });
-
-  //   eventSource.addEventListener("error", function (event) {
-  //     if (event.target.readyState === EventSource.CLOSED) {
-  //       console.log("eventsource closed (" + event.target.readyState + ")");
-  //     }
-  //     eventSource.close();
-  //   });
-
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, []);
+  }, []);
 
   const handleGetAlarm = useCallback(() => {
     axios({

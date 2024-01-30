@@ -135,7 +135,7 @@ function Mypage() {
             <RightContainer>
               <Form>
                 <label>아이디</label>
-                <div>{userInfo.userName}</div>
+                <ID>{userInfo.userName}</ID>
                 <label>이메일</label>
                 <Input placeholder={userInfo.userEmail} type="email" name="password" onChange={handleEmailChange} />
                 <label>비밀번호</label>
@@ -234,4 +234,8 @@ const InputFile = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px 5px;
+`;
+
+const ID = styled.div`
+  padding: 2px 1px;
 `;

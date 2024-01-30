@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Header from "./components/headerComponents/Header";
 import Body from "./components/bodyComponents/Body";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import WriteFeedBody from "./components/bodyComponents/WriteFeedBody";
 import MyFeedBody from "./components/bodyComponents/MyFeedBody";
@@ -16,7 +16,7 @@ import Login from "./components/login/Login";
 function App() {
   return (
     <AppContainer>
-      <BrowserRouter>
+      <HashRouter>
         <Header />
         <Routes>
           <Route>
@@ -33,7 +33,7 @@ function App() {
             <Route path="/my/info" element={<Mypage />}></Route>
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AppContainer>
   );
 }
