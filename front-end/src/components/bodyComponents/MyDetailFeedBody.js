@@ -6,6 +6,7 @@ import HoverModal from "components/modal/HoverModal";
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import AskModal from "components/modal/AskModal";
 
 function MyDetailFeedBody() {
   const { state } = useLocation();
@@ -22,34 +23,64 @@ function MyDetailFeedBody() {
   const [comments, setComments] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [comment, setComment] = useState();
+  const [isClicked, setIsClicked] = useState(state.isClicked);
+  const [notiModal, setNotiModal] = useState(false);
+  const [currModalContent, setCurrModalContent] = useState("");
+  const [askDelete, setAskDelete] = useState(false);
+
   const navigate = useNavigate();
 
+  const handleNotiModal = () => {
+    setNotiModal((e) => !e);
+  };
+
   const handleLikePost = (event) => {
-    axios({
-      url: "/api/v1/favorite/board/" + id,
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((res) => {
-        handleLikeCounts();
+    if (!localStorage.getItem("token")) {
+      handleNotiModal();
+      return;
+    }
+    if (isClicked) {
+      axios({
+        url: "/api/v1/favorite/board/" + id,
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
       })
-      .catch((error) => {
-        // console.log(error);
-      });
+        .then((res) => {
+          handleLikeCounts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios({
+        url: "/api/v1/favorite/board/" + id,
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+        .then((res) => {
+          handleLikeCounts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleLikeCounts = (event) => {
     axios({
       url: "/api/v1/favorite/board/" + id,
       method: "GET",
-      // headers: {
-      //   Authorization: "Bearer " + localStorage.getItem("token"),
-      // },
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     })
       .then((res) => {
         setLikes(res.data.responseBody.favoriteNumber);
+        setIsClicked(res.data.responseBody.isClicked);
       })
       .catch((error) => {
         console.log(error);
@@ -79,8 +110,11 @@ function MyDetailFeedBody() {
         console.log(error);
       });
   };
-
   const handleWriteComment = (pageNum, event) => {
+    if (!localStorage.getItem("token")) {
+      handleNotiModal();
+      return;
+    }
     axios({
       url: "/api/v1/user/board/" + id + "/comment",
       method: "POST",
@@ -104,7 +138,12 @@ function MyDetailFeedBody() {
     navigate("/edit/my/feed", { state: state });
   };
 
-  const handleDelete = (id) => {
+  const handlAskModal = () => {
+    setCurrModalContent("삭제하시겠습니까?");
+    setNotiModal(true);
+  };
+
+  const handleDelete = () => {
     axios({
       url: "/api/v1/board/" + id,
       method: "DELETE",
@@ -119,11 +158,10 @@ function MyDetailFeedBody() {
         console.log(error);
       });
   };
-
   useEffect(() => {
     handleGetComments();
     handleLikeCounts();
-  }, []);
+  }, [isClicked, comment]);
 
   return (
     <BodyContainer>
@@ -139,16 +177,22 @@ function MyDetailFeedBody() {
           </TitleContainer>
           <ContentContainer>{body}</ContentContainer>
           <LikesBtn onClick={handleLikePost}>
-            <p className="bi bi-hand-thumbs-up fs-6">
-              <LikeNumber>{likes}</LikeNumber>
-            </p>
+            {isClicked ? (
+              <p className="bi bi-hand-thumbs-up-fill fs-6">
+                <LikeNumber>{likes}</LikeNumber>
+              </p>
+            ) : (
+              <p className="bi bi-hand-thumbs-up fs-6">
+                <LikeNumber>{likes}</LikeNumber>
+              </p>
+            )}
           </LikesBtn>
         </MainContent>
         <EditBtn>
           <Edit type="button" className="btn btn-primary px-3  btn-sm me-md-2" onClick={handleModify}>
             수정
           </Edit>
-          <Delete type="button" className="btn btn-outline-danger btn-sm px-3" onClick={() => handleDelete(id)}>
+          <Delete type="button" className="btn btn-outline-danger btn-sm px-3" onClick={handlAskModal}>
             삭제
           </Delete>
         </EditBtn>
@@ -178,6 +222,7 @@ function MyDetailFeedBody() {
             </form>
           </CommentContainer>
         </CommentContainer>
+        {notiModal && <AskModal handleModal={handleNotiModal} currModalContent={currModalContent} activeAxios={handleDelete} />}
       </BodyWrapper>
     </BodyContainer>
   );

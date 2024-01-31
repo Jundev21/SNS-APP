@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import HoverModal from "components/modal/HoverModal";
 import LoadingAnimation from "components/modal/LoadingAnimation";
+import AskModal from "components/modal/AskModal";
 
 function Mypage() {
   const [password, setPassword] = useState("");
@@ -15,12 +16,17 @@ function Mypage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [notiModal, setNotiModal] = useState(false);
   const [currModalContent, setCurrModalContent] = useState("");
+  const [askModal, setAskModal] = useState(false);
 
   const handleNotiModal = () => {
     setNotiModal((e) => !e);
     if (notiModal) {
       navigate("/");
     }
+  };
+
+  const handleAskModal = () => {
+    setAskModal((e) => !e);
   };
 
   const handleUserInfo = () => {
@@ -94,6 +100,7 @@ function Mypage() {
   };
 
   async function handleDelete() {
+    handleAskModal();
     axios({
       url: "/api/v1/users",
       method: "DELETE",
@@ -112,8 +119,14 @@ function Mypage() {
         setCurrModalContent("회원탈퇴에 실패하였습니다.");
         // navigate("/authentication/sign-in");
       });
+
     setNotiModal(true);
   }
+
+  const handlAskModal = () => {
+    setCurrModalContent("회원 탈퇴를 하시겠습니까?");
+    setAskModal(true);
+  };
 
   return (
     <BodyContainer>
@@ -143,7 +156,7 @@ function Mypage() {
                 <label>비밀번호 확인</label>
                 <Input placeholder={"비밀번호 확인"} type="password" name="password" onChange={handlePasswordConfirm} />
                 <div className="d-grid gap-2 d-md-block mt-4 d-md-flex justify-content-md-center">
-                  <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handleDelete}>
+                  <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handlAskModal}>
                     탈퇴
                   </button>
                   <button type="button" className="btn btn-outline-danger px-5 me-md-2" onClick={handleClose}>
@@ -156,6 +169,7 @@ function Mypage() {
               </Form>
 
               {notiModal && <HoverModal handleModal={handleNotiModal} currModalContent={currModalContent} />}
+              {askModal && <AskModal handleModal={handleAskModal} currModalContent={currModalContent} activeAxios={handleDelete} />}
             </RightContainer>
           </MemberContainer>
         )}
@@ -237,5 +251,5 @@ const InputFile = styled.div`
 `;
 
 const ID = styled.div`
-  padding: 2px 1px;
+  padding: 7px 12px;
 `;
