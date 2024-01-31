@@ -16,7 +16,7 @@ import Login from "./components/login/Login";
 function App() {
   return (
     <AppContainer>
-      <BrowserRouter>
+      <HashRouter>
         <Header />
         <Routes>
           <Route>
@@ -33,7 +33,7 @@ function App() {
             <Route path="/my/info" element={<Mypage />}></Route>
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AppContainer>
   );
 }
