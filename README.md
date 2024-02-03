@@ -1,5 +1,7 @@
 # SNS-APP
 
+- 배포 url : https://sns-76ba358a9fdb.herokuapp.com/
+
 ## 개인프로젝트
 
 - 프론트엔드
