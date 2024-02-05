@@ -1,6 +1,8 @@
 package com.sns.sns.service.domain.member.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sns.sns.service.common.BaseTimeEntity;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.comment.model.CommentEntity;
@@ -25,6 +27,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Member extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +46,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private List<CommentEntity> commentEntityList = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<NotificationEntity> notificationEntityList = new ArrayList<>();
-
+    @JsonIgnore
     public Member(
             String username,
             String password,
@@ -53,7 +56,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.password = password;
         this.userEmail = userEmail;
     }
-
+    @JsonIgnore
     public void UpdateMemberInfo(
             String userEmail,
             String password
@@ -66,31 +69,37 @@ public class Member extends BaseTimeEntity implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return this.userName;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
