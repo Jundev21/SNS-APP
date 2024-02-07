@@ -47,7 +47,6 @@ public class AuthenticationConfig{
                 .cors(CorsConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests((request) -> request
-                        .requestMatchers("/api/v1/users/notification/subscribe/*").permitAll()
                         .requestMatchers("/api/v1/users/notification/subscribe/**").permitAll()
                         .requestMatchers("/api/*/users/join").permitAll()
                         .requestMatchers("/api/*/users/login").permitAll()
