@@ -61,11 +61,11 @@ public class MemberService {
     public LoginResponse memberLogin(LoginRequest loginRequest) {
 
         //로컬 레디스
-//        Member member = memberRepository.findByUserName(loginRequest.userName())
-//                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원"));
+        Member member = memberRepository.findByUserName(loginRequest.userName())
+                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원"));
 
-        Member member = loadMemberByMemberName(loginRequest.userName());
-        memberRedisRepo.setMember(member);
+//        Member member = loadMemberByMemberName(loginRequest.userName());
+//        memberRedisRepo.setMember(member);
 
         if(!encoder.matches(loginRequest.password(), member.getPassword())){
             throw new BasicException(ErrorCode.INVALID_PASSWORD,"비밀번호 다릅니다.");
@@ -83,11 +83,12 @@ public class MemberService {
 
         //레디스 처리 해당 사용자가 존재하는지 매번 디비에서 확인하지않고 레디스에서 먼저 확인한다.
 // //로컬 레디스
-//        return memberRepository.findByUserName(userName)
-//                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원"));
-        return memberRedisRepo.getMember(userName).orElseGet(() ->
-                memberRepository.findByUserName(userName)
-                        .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원")));
+        return memberRepository.findByUserName(userName)
+                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원"));
+
+//        return memberRedisRepo.getMember(userName).orElseGet(() ->
+//                memberRepository.findByUserName(userName)
+//                        .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, "존재하지 않는 회원")));
 
 
     }

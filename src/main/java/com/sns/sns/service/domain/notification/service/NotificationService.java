@@ -7,7 +7,6 @@ import com.sns.sns.service.domain.exception.ErrorCode;
 import com.sns.sns.service.domain.favorite.repository.FavoriteRepository;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.repository.MemberRepository;
-import com.sns.sns.service.domain.notification.dto.NotificationType;
 import com.sns.sns.service.domain.notification.dto.response.NotificationResponse;
 import com.sns.sns.service.domain.notification.dto.response.SseResponse;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
@@ -15,6 +14,8 @@ import com.sns.sns.service.domain.notification.repository.NotificationRepository
 import com.sns.sns.service.domain.notification.repository.SseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -36,6 +37,9 @@ public class NotificationService {
     private final CommentRepository commentRepository;
     private final FavoriteRepository favoriteRepository;
     private final SseRepository sseRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    private final String kafkaTopic = "notification";
     private final static String EVENT_NAME = "alarm";
     private final static Long DEFAULT_TIME = 60L * 1000 * 60;
 
@@ -97,5 +101,12 @@ public class NotificationService {
         return sseEmitter;
     }
 
+    public void sendProducer(String msg){
+        kafkaTemplate.send(kafkaTopic, msg);
+    }
 
+    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
+    public void notificationConsumer(String message){
+        System.out.printf("Subscribed : " + message);
+    }
 }

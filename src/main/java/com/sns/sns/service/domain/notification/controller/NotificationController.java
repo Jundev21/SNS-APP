@@ -3,11 +3,9 @@ package com.sns.sns.service.domain.notification.controller;
 
 import com.sns.sns.service.common.response.Response;
 import com.sns.sns.service.domain.member.model.entity.Member;
-import com.sns.sns.service.domain.notification.dto.request.NotificationRequest;
 import com.sns.sns.service.domain.notification.dto.response.NotificationResponse;
 import com.sns.sns.service.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -38,6 +36,13 @@ public class NotificationController {
            @AuthenticationPrincipal Member member
     ){
         return notificationService.sseConnector(member);
+    }
+
+    @PostMapping(value = "/kafkaProducer")
+    public void notificationSubscribe(
+            @RequestParam String msg
+    ){
+        notificationService.sendProducer(msg);
     }
 
 
