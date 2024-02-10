@@ -20,9 +20,9 @@ import org.springframework.kafka.core.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
-@EnableKafkaStreams
-@EnableKafka
+//@Configuration
+//@EnableKafkaStreams
+//@EnableKafka
 public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")

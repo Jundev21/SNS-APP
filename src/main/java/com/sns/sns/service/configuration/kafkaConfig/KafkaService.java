@@ -11,15 +11,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class KafkaService {
 
     private static final Serde<String> STRING_SERDE = Serdes.String();
 
-    @Bean
-    public void buildPipeline(StreamsBuilder sb){
-        KStream<String, String> kafkaStream = sb.stream("notification", Consumed.with(STRING_SERDE, STRING_SERDE));
-        kafkaStream.filter((key, value) -> value.contains("something")).to("targettopic");
-    }
+//    @Bean
+//    public void buildPipeline(StreamsBuilder sb){
+//        KStream<String, String> kafkaStream = sb.stream("notification", Consumed.with(STRING_SERDE, STRING_SERDE));
+//        kafkaStream.filter((key, value) -> value.contains("something")).to("targettopic");
+//    }
 
 }

@@ -105,7 +105,7 @@ public class NotificationService {
         kafkaTemplate.send(kafkaTopic, msg);
     }
 
-    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
+//    @KafkaListener(topics = kafkaTopic, groupId = "notificationGroup")
     public void notificationConsumer(String message){
         System.out.printf("Subscribed : " + message);
     }
