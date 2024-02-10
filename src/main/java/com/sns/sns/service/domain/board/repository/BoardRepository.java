@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 ;
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +16,12 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
 
     Page<BoardEntity> findAllByMember(Member member, Pageable pageable);
     Page<BoardEntity> findAllByOrderByIdDesc(Pageable pageable);
+
+    @Query("select b from BoardEntity b " +
+            "join fetch b.member bm " +
+            "join fetch b.favoriteEntityList bf " +
+            "join fetch b.commentEntityList bc " +
+            "join fetch b.notificationEntityList bn"
+            )
+    Page<BoardEntity> findAllBoard(Pageable pageable);
 }
