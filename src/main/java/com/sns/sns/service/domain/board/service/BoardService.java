@@ -74,8 +74,8 @@ public class BoardService {
     @Transactional
     public Page<BoardGetResponse> getBoard(Pageable pageable) {
 
-//        Page<BoardEntity> board = boardRepository.findAll(pageable);
-        Page<BoardEntity> board = boardRepository.findAllBoard(pageable);
+        Page<BoardEntity> board = boardRepository.findAll(pageable);
+//        Page<BoardEntity> board = boardRepository.findAllBoard(pageable);
         return board.map(BoardGetResponse::boardGetResponse);
     }
     @Transactional
