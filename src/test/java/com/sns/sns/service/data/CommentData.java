@@ -14,7 +14,7 @@ public class CommentData {
 
     public static CommentPostResponse commentPostResponseData(){
 
-        Member member = new Member("test member", "password");
+        Member member = new Member("test member", "password","email");
         BoardEntity boardEntity = new BoardEntity("board title", "board content", member);
         CommentEntity comment = new CommentEntity("comment content", boardEntity,member);
         return CommentPostResponse.commentPostResponse(comment);
@@ -31,7 +31,7 @@ public class CommentData {
     }
 
     public static CommentGetResponse commentGetResponseData(){
-        Member member = new Member("test member", "password");
+        Member member = new Member("test member", "password","email");
         BoardEntity boardEntity = new BoardEntity("board title", "board content", member);
         CommentEntity comment =new CommentEntity("comment content", boardEntity,member);
         return CommentGetResponse.commentGetResponse(comment);

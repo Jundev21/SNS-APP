@@ -10,6 +10,7 @@ import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
@@ -21,6 +22,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class BoardEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +40,9 @@ public class BoardEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
     private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
 
-//    @Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")
+    @Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")
     private long countFavorite;
-//    @Formula("(select count(*) from comment_entity where comment_entity.board_entity_id=id)")
+    @Formula("(select count(*) from comment_entity where comment_entity.board_entity_id=id)")
     private long countComments;
 
     //좋아요는 순서 상관없이 추가 삭제가 유용함으로 이부분 map 으로 리팩토링 해보기

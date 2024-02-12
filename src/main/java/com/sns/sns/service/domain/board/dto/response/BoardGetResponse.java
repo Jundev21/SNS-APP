@@ -4,6 +4,7 @@ import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.member.dto.response.BasicUserInfoResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 

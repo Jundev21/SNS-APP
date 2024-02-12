@@ -71,7 +71,7 @@ public class NotificationServiceTest {
 //                        new NotificationEntity(member, NotificationType.COMMENT_NOTIFICATION)
                 );
 
-        given( notificationRepository.findAllByMember(any())).willReturn(notificationEntityList);
+//        given( notificationRepository.findAllByMember(any())).willReturn(notificationEntityList);
 
 //        NotificationResponse result = notificationService.makeNotification(member);
         NotificationResponse result2 = notificationService.makeNotification(secondMember);

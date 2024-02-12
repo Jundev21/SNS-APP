@@ -106,7 +106,7 @@ public class BoardControllerTest {
                         1L,
                         boardUpdateRequest.title(),
                         boardUpdateRequest.content(),
-                        new BasicUserInfoResponse(1L, "test"),
+                        new BasicUserInfoResponse(1L, "test",1L),
                         LocalDateTime.now(),
                         LocalDateTime.now()
                 ));

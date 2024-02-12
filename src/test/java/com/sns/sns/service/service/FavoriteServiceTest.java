@@ -56,7 +56,7 @@ public class FavoriteServiceTest {
         // 2. 해당 게시물이 있는지 확인 - 목데이터
         // 3. 좋아요를 이미 눌렀는지 확인 (만약 안눌렀을시 좋아요 추가 성공) - 서비스 로직
 
-        Member member = new Member("test", "test");
+        Member member = new Member("test", "test", "email");
 
         when(memberRepository.findByUserName(any()))
                 .thenReturn(Optional.ofNullable(mock(Member.class)));
@@ -89,7 +89,7 @@ public class FavoriteServiceTest {
     @DisplayName("좋아요 중복 실패 케이스")
     public void duplicateFavorite(){
 
-        Member member = new Member("test", "test");
+        Member member = new Member("test", "test", "email");
 
         when(memberRepository.findByUserName(any()))
                 .thenReturn(Optional.ofNullable(mock(Member.class)));
@@ -111,7 +111,7 @@ public class FavoriteServiceTest {
     @DisplayName("좋아요 삭제 성공 케이스")
     public void deleteFavorite(){
 
-        Member member = new Member("test", "test");
+        Member member = new Member("test", "test", "email");
 
         when(memberRepository.findByUserName(any()))
                 .thenReturn(Optional.ofNullable(mock(Member.class)));
@@ -131,7 +131,7 @@ public class FavoriteServiceTest {
     @DisplayName("좋아요 권한이 없어 삭제 실패 케이스")
     public void deleteFailFavorite(){
 
-        Member member = new Member("test", "test");
+        Member member = new Member("test", "test", "email");
 
         when(memberRepository.findByUserName(any()))
                 .thenReturn(Optional.ofNullable(mock(Member.class)));

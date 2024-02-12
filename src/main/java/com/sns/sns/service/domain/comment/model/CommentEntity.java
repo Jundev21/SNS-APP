@@ -6,6 +6,7 @@ import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.notification.model.NotificationEntity;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.w3c.dom.Text;
@@ -14,6 +15,7 @@ import javax.management.Notification;
 
 @Entity
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class CommentEntity extends BaseTimeEntity {
 
