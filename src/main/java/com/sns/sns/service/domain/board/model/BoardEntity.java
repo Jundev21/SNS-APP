@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Formula;
 import org.springframework.context.annotation.Lazy;
 
@@ -33,11 +34,14 @@ public class BoardEntity extends BaseTimeEntity {
     @ManyToOne
     private Member member;
 
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
     private List<NotificationEntity> notificationEntityList = new ArrayList<>();
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
     private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
 
     @Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")
