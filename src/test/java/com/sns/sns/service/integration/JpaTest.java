@@ -6,6 +6,7 @@ import com.sns.sns.service.domain.comment.model.CommentEntity;
 import com.sns.sns.service.domain.comment.repository.CommentRepository;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import com.sns.sns.service.domain.member.repository.MemberRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 public class JpaTest {
 
+    @Autowired
+    private EntityManager em;
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
@@ -51,19 +54,35 @@ public class JpaTest {
     @DisplayName("JPA 게시판 findAll N+1 발생 케이스")
     public void occurNPlusOneProblem(){
 
-//        Member member = new Member("test","1234","1234");
-//        memberRepository.save(member);
+        Member member = new Member("test","1234","1234");
+        memberRepository.save(member);
 
         for(int i=0; i<4; i++){
-            BoardEntity boardEntity = new BoardEntity("test title", "test contents", null);
-            CommentEntity commentEntity = new CommentEntity("first comment", boardEntity, null);
-            commentRepository.save(commentEntity);
+            BoardEntity boardEntity = new BoardEntity("test title", "test contents", member);
             boardRepository.save(boardEntity);
-        }
 
+            CommentEntity commentEntity = new CommentEntity("first comment" + i, boardEntity, member);
+            commentRepository.save(commentEntity);
+        }
+        em.flush();
+        em.clear();
 
         System.out.println("==============================find Entity=============================");
-        List<BoardEntity> findAllBoard = boardRepository.findAllBoard();
-    }
+//        List<BoardEntity> findAllBoard = boardRepository.findAllBoard();
+        List<BoardEntity> findAllBoard = boardRepository.findAll();
 
+        System.out.println("==============================find comments=============================");
+
+//        findAllBoard.stream()
+//                .forEach(board->
+//                        board.getCommentEntityList()
+//                                .forEach(comment ->
+//                                        System.out.println("Searching" + "find comment" + comment.getContent())));
+//
+
+        findAllBoard.stream()
+                .forEach(board ->
+                        System.out.println("board content " + board.getContents()));
+
+    }
 }
