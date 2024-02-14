@@ -15,7 +15,6 @@ import javax.management.Notification;
 
 @Entity
 @Getter
-@EqualsAndHashCode
 @NoArgsConstructor
 public class CommentEntity extends BaseTimeEntity {
 

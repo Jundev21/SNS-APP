@@ -23,7 +23,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode
 public class BoardEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,17 +30,17 @@ public class BoardEntity extends BaseTimeEntity {
     private String title;
     @Column(columnDefinition = "TEXT")
     private String contents;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @BatchSize(size = 100)
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
+//    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<NotificationEntity> notificationEntityList = new ArrayList<>();
-    @BatchSize(size = 100)
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
+//    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
-    @BatchSize(size = 100)
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL)
+//    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
 
     @Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")

@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,13 +58,21 @@ public class JpaTest {
         Member member = new Member("test","1234","1234");
         memberRepository.save(member);
 
+        List<BoardEntity> boardEntities = new ArrayList<>();
+        List<CommentEntity> commentEntityList = new ArrayList<>();
+
         for(int i=0; i<4; i++){
             BoardEntity boardEntity = new BoardEntity("test title", "test contents", member);
-            boardRepository.save(boardEntity);
+            boardEntities.add(boardEntity);
 
             CommentEntity commentEntity = new CommentEntity("first comment" + i, boardEntity, member);
-            commentRepository.save(commentEntity);
+            commentEntityList.add(commentEntity);
         }
+
+        boardRepository.saveAll(boardEntities);
+        commentRepository.saveAll(commentEntityList);
+
+
         em.flush();
         em.clear();
 
@@ -73,16 +82,16 @@ public class JpaTest {
 
         System.out.println("==============================find comments=============================");
 
-//        findAllBoard.stream()
-//                .forEach(board->
-//                        board.getCommentEntityList()
-//                                .forEach(comment ->
-//                                        System.out.println("Searching" + "find comment" + comment.getContent())));
-//
-
         findAllBoard.stream()
-                .forEach(board ->
-                        System.out.println("board content " + board.getContents()));
+                .forEach(board->
+                        board.getCommentEntityList()
+                                .forEach(comment ->
+                                        System.out.println("Searching" + "find comment" + comment.getContent())));
+
+
+//        findAllBoard.stream()
+//                .forEach(board ->
+//                        System.out.println("board content " + board.getContents()));
 
     }
 }
