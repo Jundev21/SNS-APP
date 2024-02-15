@@ -37,10 +37,8 @@ public class CommentService {
     private final NotificationService notificationService;
     @Transactional
     public CommentPostResponse createComment(Long boardId, Member member, CommentPostRequest commentPostRequest) {
-        Member findMember = memberRepository.findByUserName(member.getUsername())
-                .orElseThrow(() -> new BasicException(NOT_EXIST_MEMBER, NOT_EXIST_MEMBER.message));
-        BoardEntity findBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BasicException(NOT_EXIST_BOARD, NOT_EXIST_BOARD.getMessage()));
+        Member findMember = getMember(member);
+        BoardEntity findBoard = extracted(boardId);
 
         CommentEntity newComment = new CommentEntity(commentPostRequest.content(), findBoard,findMember);
         CommentEntity savedComment = commentRepository.save(newComment);
@@ -50,46 +48,33 @@ public class CommentService {
 
         return CommentPostResponse.commentPostResponse(savedComment);
     }
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CommentGetResponse> getComment(Long boardId, Member member) {
-        BoardEntity findBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BasicException(NOT_EXIST_BOARD, NOT_EXIST_BOARD.getMessage()));
-
+        BoardEntity findBoard = extracted(boardId);
         List<CommentEntity> commentEntityList = commentRepository.findAllCommentEntityByBoardEntity(findBoard);
-
         return commentEntityList.stream()
                         .map(comment -> CommentGetResponse.commentGetResponse(comment))
                         .toList();
     }
     @Transactional
     public CommentUpdateResponse updateComment(Long boardId , Long commentId, Member member, CommentUpdateRequest commentUpdateRequest) {
-        Member findMember = memberRepository.findByUserName(member.getUsername())
-                .orElseThrow(() -> new BasicException(NOT_EXIST_MEMBER, NOT_EXIST_MEMBER.message));
-        BoardEntity findBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BasicException(NOT_EXIST_BOARD, NOT_EXIST_BOARD.getMessage()));
-        CommentEntity findComment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new BasicException(NOT_EXIST_COMMENT, NOT_EXIST_COMMENT.getMessage()));
-
+        Member findMember = getMember(member);
+        extracted(boardId);
+        CommentEntity findComment = getCommentEntity(commentId);
         findComment.updateComment(commentUpdateRequest.content());
-
         commentEditPermission(findMember,findComment);
-
         return CommentUpdateResponse.commentUpdateResponse(findComment);
     }
     @Transactional
     public void deleteComment(Long boardId, Long commentId, Member member) {
-        Member findMember = memberRepository.findByUserName(member.getUsername())
-                .orElseThrow(() -> new BasicException(NOT_EXIST_MEMBER, NOT_EXIST_MEMBER.message));
-        BoardEntity findBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BasicException(NOT_EXIST_BOARD, NOT_EXIST_BOARD.getMessage()));
-        CommentEntity findComment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new BasicException(NOT_EXIST_COMMENT, NOT_EXIST_COMMENT.getMessage()));
+        Member findMember = getMember(member);
+        extracted(boardId);
+        CommentEntity findComment = getCommentEntity(commentId);
 
         commentEditPermission(findMember,findComment);
 
         commentRepository.delete(findComment);
     }
-
     @Transactional
     public void commentEditPermission(Member member,CommentEntity comment){
         if(member.getUsername() != comment.getMember().getUsername()){
@@ -108,4 +93,20 @@ public class CommentService {
                 .orElseThrow(() -> new BasicException(NOT_EXIST_NOTIFICATION, NOT_EXIST_NOTIFICATION.message));
         notificationRepository.delete(notificationEntity);
     }
+
+    private CommentEntity getCommentEntity(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new BasicException(NOT_EXIST_COMMENT, NOT_EXIST_COMMENT.getMessage()));
+    }
+
+    private BoardEntity extracted(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BasicException(NOT_EXIST_BOARD, NOT_EXIST_BOARD.getMessage()));
+    }
+
+    private Member getMember(Member member) {
+        return memberRepository.findByUserName(member.getUsername())
+                .orElseThrow(() -> new BasicException(NOT_EXIST_MEMBER, NOT_EXIST_MEMBER.message));
+    }
+
 }

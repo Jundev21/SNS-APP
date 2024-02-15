@@ -25,15 +25,11 @@ public class BoardService {
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
-
-
-
+    
     @Transactional
     public BoardResponse writeBoard(BoardRequest boardRequest, Member member) {
 
-        Member findMember = memberRepository.findByUserName(member.getUsername()).
-                orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_MEMBER, "없는멤버"));
-
+        Member findMember = getMember(member);
         BoardEntity board = new BoardEntity(boardRequest.title(), boardRequest.contents(), member);
         BoardEntity savedBoard = boardRepository.save(board);
         return BoardResponse.boardResponse(savedBoard, member);
@@ -42,11 +38,8 @@ public class BoardService {
     @Transactional
     public BoardUpdateResponse updateBoard(Long boardId, BoardUpdateRequest boardUpdateRequest, Member member) {
 
-        Member findMember = memberRepository.findByUserName(member.getUsername())
-                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
-
-        BoardEntity board = boardRepository.findById(boardId)
-                .orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
+        Member findMember = getMember(member);
+        BoardEntity board = getBoardEntity(boardId);
 
         if(findMember != board.getMember()){
             throw new BasicException(ErrorCode.INVALID_PERMISSION,ErrorCode.INVALID_PERMISSION.getMessage());
@@ -55,14 +48,12 @@ public class BoardService {
         BoardEntity newBoard = board.updateBoard(boardUpdateRequest);
         return BoardUpdateResponse.boardUpdateResponse(newBoard, findMember);
     }
+
     @Transactional
     public BoardDeleteResponse deleteBoard(Long boardId, Member member) {
 
-        Member findMember = memberRepository.findByUserName(member.getUsername())
-                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
-
-        BoardEntity board =  boardRepository.findById(boardId)
-                .orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
+        Member findMember = getMember(member);
+        BoardEntity board = getBoardEntity(boardId);
 
         if(findMember != board.getMember()){
             throw new BasicException(ErrorCode.INVALID_PERMISSION,ErrorCode.INVALID_PERMISSION.getMessage());
@@ -71,24 +62,33 @@ public class BoardService {
         boardRepository.delete(board);
         return BoardDeleteResponse.boardDeleteResponse(board, findMember);
     }
-    @Transactional
+    @Transactional (readOnly = true)
     public Page<BoardGetResponse> getBoard(Pageable pageable) {
-
         Page<BoardEntity> board = boardRepository.findAll(pageable);
 //        Page<BoardEntity> board = boardRepository.findAllBoard(pageable);
         return board.map(BoardGetResponse::boardGetResponse);
     }
-    @Transactional
+    @Transactional (readOnly = true)
     public Page<BoardGetResponse> getUserBoard(Pageable pageable, Member member) {
-
         Member findMember = memberRepository.findByUserName(member.getUsername())
                 .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
 
         Page<BoardEntity> boardEntities = boardRepository.findAllByMember(findMember, pageable);
         return boardEntities.map(BoardGetResponse::boardGetResponse);
-
-
-
+        
     }
+
+    private Member getMember(Member member) {
+        Member findMember = memberRepository.findByUserName(member.getUsername())
+                .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
+        return findMember;
+    }
+    private BoardEntity getBoardEntity(Long boardId) {
+        BoardEntity board = boardRepository.findById(boardId)
+                .orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
+        return board;
+    }
+
+
 
 }
