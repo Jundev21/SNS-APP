@@ -3,10 +3,7 @@ package com.sns.sns.service.domain.board.service;
 
 import com.sns.sns.service.domain.board.dto.request.BoardRequest;
 import com.sns.sns.service.domain.board.dto.request.BoardUpdateRequest;
-import com.sns.sns.service.domain.board.dto.response.BoardDeleteResponse;
-import com.sns.sns.service.domain.board.dto.response.BoardGetResponse;
-import com.sns.sns.service.domain.board.dto.response.BoardResponse;
-import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
+import com.sns.sns.service.domain.board.dto.response.*;
 import com.sns.sns.service.domain.board.model.BoardEntity;
 import com.sns.sns.service.domain.board.repository.BoardRepository;
 import com.sns.sns.service.domain.exception.BasicException;
@@ -78,6 +75,12 @@ public class BoardService {
         
     }
 
+    @Transactional(readOnly = true)
+    public BoardDetailResponse getBoardDetail(Long boardId) {
+        BoardEntity findBoard = getBoardEntity(boardId);
+        return BoardDetailResponse.boardDetailResponse(findBoard);
+    }
+
     private Member getMember(Member member) {
         Member findMember = memberRepository.findByUserName(member.getUsername())
                 .orElseThrow(() -> new BasicException(ErrorCode.NOT_EXIST_MEMBER, ErrorCode.NOT_EXIST_MEMBER.getMessage()));
@@ -88,7 +91,4 @@ public class BoardService {
                 .orElseThrow(()->new BasicException(ErrorCode.NOT_EXIST_BOARD,ErrorCode.NOT_EXIST_BOARD.getMessage()));
         return board;
     }
-
-
-
 }

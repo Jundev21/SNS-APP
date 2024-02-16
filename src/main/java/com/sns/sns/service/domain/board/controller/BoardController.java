@@ -4,10 +4,7 @@ package com.sns.sns.service.domain.board.controller;
 import com.sns.sns.service.common.response.Response;
 import com.sns.sns.service.domain.board.dto.request.BoardRequest;
 import com.sns.sns.service.domain.board.dto.request.BoardUpdateRequest;
-import com.sns.sns.service.domain.board.dto.response.BoardDeleteResponse;
-import com.sns.sns.service.domain.board.dto.response.BoardGetResponse;
-import com.sns.sns.service.domain.board.dto.response.BoardResponse;
-import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
+import com.sns.sns.service.domain.board.dto.response.*;
 import com.sns.sns.service.domain.board.service.BoardService;
 import com.sns.sns.service.domain.member.model.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +48,13 @@ public class BoardController {
             @AuthenticationPrincipal Member member
     ){
         return Response.success(boardService.deleteBoard(boardId,member));
+    }
+
+    @GetMapping("/{boardId}")
+    public Response<BoardDetailResponse> deleteBoard(
+            @PathVariable Long boardId
+    ){
+        return Response.success(boardService.getBoardDetail(boardId));
     }
 
     @GetMapping
