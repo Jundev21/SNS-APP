@@ -42,7 +42,6 @@ public class BoardEntity extends BaseTimeEntity {
 //    @BatchSize(size = 100)
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<FavoriteEntity> favoriteEntityList = new ArrayList<>();
-
     @Formula("(select count(*) from favorite_entity where favorite_entity.board_entity_id=id)")
     private long countFavorite;
     @Formula("(select count(*) from comment_entity where comment_entity.board_entity_id=id)")

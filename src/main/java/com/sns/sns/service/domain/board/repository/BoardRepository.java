@@ -20,7 +20,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     @Query("select b from BoardEntity b " +
             "join fetch b.commentEntityList bc " +
             "join fetch b.favoriteEntityList bf"
-
             )
     Page<BoardEntity> findAllBoard(Pageable pageable);
 

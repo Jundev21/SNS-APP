@@ -67,6 +67,16 @@ public class JpaTest {
 
             CommentEntity commentEntity = new CommentEntity("first comment" + i, boardEntity, member);
             commentEntityList.add(commentEntity);
+
+        }
+
+
+        for(int i=0; i<4; i++){
+            BoardEntity boardEntity = new BoardEntity("test title", "test contents", member);
+            boardEntities.add(boardEntity);
+
+            CommentEntity commentEntity = new CommentEntity("first comment" + i, boardEntity, member);
+            commentEntityList.add(commentEntity);
         }
 
         boardRepository.saveAll(boardEntities);
@@ -80,14 +90,14 @@ public class JpaTest {
 //        List<BoardEntity> findAllBoard = boardRepository.findAllBoard();
         List<BoardEntity> findAllBoard = boardRepository.findAll();
 
-        System.out.println("==============================find comments=============================");
-
-        findAllBoard.stream()
-                .forEach(board->
-                        board.getCommentEntityList()
-                                .forEach(comment ->
-                                        System.out.println("Searching" + "find comment" + comment.getContent())));
-
+//        System.out.println("==============================find comments=============================");
+//
+//        findAllBoard.stream()
+//                .forEach(board->
+//                        board.getCommentEntityList()
+//                                .forEach(comment ->
+//                                        System.out.println("Searching" + "find comment" + comment.getContent())));
+//
 
 //        findAllBoard.stream()
 //                .forEach(board ->
