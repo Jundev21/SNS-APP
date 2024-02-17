@@ -42,6 +42,15 @@ public class RedisConfig {
 //        return factory;
 //    }
 
+//    @Bean
+//    public RedisTemplate<String, String> testRedisTemplate(RedisConnectionFactory redisConnectionFactory){
+//        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setConnectionFactory(redisConnectionFactory);
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        return redisTemplate;
+//    }
+
+    // 로컬 레디스 실행
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisProperties.getHost(),redisProperties.getPort());
@@ -63,11 +72,4 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-//    @Bean
-//    public RedisTemplate<String, String> testRedisTemplate(RedisConnectionFactory redisConnectionFactory){
-//        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(redisConnectionFactory);
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        return redisTemplate;
-//    }
 }
