@@ -57,7 +57,7 @@ public class MemberService {
         return RegisterResponse.fromEntity(newMember);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public LoginResponse memberLogin(LoginRequest loginRequest) {
 
         //로컬 레디스
@@ -78,7 +78,7 @@ public class MemberService {
         return new LoginResponse(jwtToken, null);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Member loadMemberByMemberName(String userName){
 
         //레디스 처리 해당 사용자가 존재하는지 매번 디비에서 확인하지않고 레디스에서 먼저 확인한다.
@@ -101,7 +101,7 @@ public class MemberService {
         return MemberInfoResponse.memberInfo(findMember);
 
     }
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Member member) {
 
         Member findMember = memberRepository.findByUserName(member.getUsername())
