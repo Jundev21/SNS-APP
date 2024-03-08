@@ -139,7 +139,6 @@ const CardContent = styled.div`
   overflow: hidden;
   white-space: nowrap;
   max-height: 10em;
-
   line-height: 1.5em;
   padding-bottom: 10px;
 `;

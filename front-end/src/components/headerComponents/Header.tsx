@@ -35,6 +35,7 @@ function Header() {
         <img src={snsImg} width={120} height={100} alt="snsImg" />
       </LogoArea>
       <HeaderWrapper>
+        <SearchBar />
         <Feed />
         <WriteFeed />
         <MyFeed />
@@ -80,6 +81,7 @@ const LogoArea = styled.div`
   flex-basis: 10%;
   font-size: 50px;
   cursor: pointer;
+  text-align: center;
 `;
 
 const BeforeLoginInfo = styled.div`
