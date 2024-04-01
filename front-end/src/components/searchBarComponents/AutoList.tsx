@@ -28,8 +28,7 @@ function AutoList({ autoComplete, handleTagName, searchWord }: AutoCompType) {
       ) : (
         <SearchingContainer onClick={() => handleTagName(searchWord)}>
           <div>
-            상품&nbsp; <TypeSearching> "{searchWord}" </TypeSearching> &nbsp;
-            검색하기
+            <TypeSearching> "{searchWord}" </TypeSearching> &nbsp; 검색하기
           </div>
         </SearchingContainer>
       )}
@@ -44,7 +43,7 @@ const TagName = styled.div`
 `;
 
 const TypeSearching = styled.span`
-  color: rgb(247, 0, 0);
+  color: gray;
   cursor: pointer;
   &:hover {
     background-color: rgb(240, 240, 235);

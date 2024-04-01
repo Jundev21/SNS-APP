@@ -2,7 +2,6 @@ package com.sns.sns.service.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sns.sns.service.domain.board.controller.BoardController;
 import com.sns.sns.service.domain.board.dto.request.BoardRequest;
 import com.sns.sns.service.domain.board.dto.request.BoardUpdateRequest;
 import com.sns.sns.service.domain.board.dto.response.BoardUpdateResponse;
@@ -11,25 +10,20 @@ import com.sns.sns.service.domain.exception.BasicException;
 import com.sns.sns.service.domain.exception.ErrorCode;
 import com.sns.sns.service.domain.member.dto.response.BasicUserInfoResponse;
 import com.sns.sns.service.domain.member.model.entity.Member;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

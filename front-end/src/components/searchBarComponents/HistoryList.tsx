@@ -7,11 +7,7 @@ interface AutoCompType {
   setSearchHistory: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-function HistoryList({
-  searchHistory,
-  handleTagName,
-  setSearchHistory,
-}: AutoCompType) {
+function HistoryList({ searchHistory, handleTagName, setSearchHistory }: AutoCompType) {
   const handleClear = () => {
     sessionStorage.clear();
     let getSessionData = sessionStorage.getItem("SearchHistory");
@@ -36,7 +32,7 @@ function HistoryList({
 
   return (
     <HistoryContainer>
-      <HistoryTitle>최근 검색어</HistoryTitle>
+      <HistoryTitle className="text-primary">최근 검색어</HistoryTitle>
       <ListContainer>
         {searchHistory.length === 0 ? (
           <Warining>최근 검색어가 없습니다.</Warining>
@@ -46,14 +42,16 @@ function HistoryList({
               return (
                 <ContentContainer key={(idx * Math.random()).toString() + el}>
                   <TagName onClick={() => handleTagName(el)}>{el}</TagName>
-                  <span onClick={() => handleDeleteList(idx)}>X</span>
+                  <span className="text-primary" onClick={() => handleDeleteList(idx)}>
+                    X
+                  </span>
                 </ContentContainer>
               );
             })}
           </>
         )}
       </ListContainer>
-      <DeleteHistory onClick={() => handleClear()}>
+      <DeleteHistory className="text-primary" onClick={() => handleClear()}>
         전체 기록 삭제
       </DeleteHistory>
     </HistoryContainer>
@@ -98,7 +96,7 @@ const HistoryContainer = styled.div`
 const HistoryTitle = styled.div`
   padding: 10px 10px;
   margin-bottom: 10px;
-  color: rgb(247, 0, 0);
+  color: gray;
   text-align: center;
   border-bottom: 1px solid rgb(217, 217, 217);
 `;
@@ -112,7 +110,7 @@ const DeleteHistory = styled.div`
   font-size: 14px;
   padding: 10px 0;
   cursor: pointer;
-  color: rgb(247, 0, 0);
+  color: gray;
   border-top: 1px solid rgb(217, 217, 217);
 
   &:hover {
